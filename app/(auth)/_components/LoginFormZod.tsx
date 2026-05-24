@@ -26,7 +26,7 @@ export default function LoginFormZod() {
           <label> Email :</label>
           <input
             type="email"
-            {...register("email", { required: "email is required" })}
+            {...register("email", { required: "Email is required" })}
           />
           {errors.email && <span> {errors.email.message}</span>}
         </div>
@@ -34,7 +34,7 @@ export default function LoginFormZod() {
           <label> password :</label>
           <input
             type="password"
-            {...register("password", { required: "pw is required" })}
+            {...register("password", { required: "Password is required" })}
           />
           {errors.password && <span> {errors.password.message}</span>}
         </div>
