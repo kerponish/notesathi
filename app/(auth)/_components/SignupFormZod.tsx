@@ -1,4 +1,5 @@
 "use client";
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterFormData, registerSchema } from "./schema";
@@ -11,6 +12,7 @@ export default function RegisterFormZod() {
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
+      fullname: "",
       email: "default@gmail.com",
       password: "",
       confirmPassword: "",
@@ -18,41 +20,40 @@ export default function RegisterFormZod() {
   });
 
   const onSubmit = (data: RegisterFormData) => {
-    alert("Submitted data: " + data.email + ", " + data.password);
+    alert(`Submitted data: ${data.fullname}, ${data.email}, ${data.password}`);
   };
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <label> Email :</label>
-          <input
-            type="email"
-            {...register("email", { required: "email is required" })}
-          />
-          {errors.email && <span> {errors.email.message}</span>}
+          <label>Fullname :</label>
+          <input type="text" {...register("fullname")} />
+          {errors.fullname && <span>{errors.fullname.message}</span>}
         </div>
+
         <div>
-          <label> password :</label>
-          <input
-            type="password"
-            {...register("password", { required: "pw is required" })}
-          />
-          {errors.password && <span> {errors.password.message}</span>}
+          <label>Email :</label>
+          <input type="email" {...register("email")} />
+          {errors.email && <span>{errors.email.message}</span>}
         </div>
+
         <div>
-          <label> confirm password :</label>
-          <input
-            type="password"
-            {...register("confirmPassword", {
-              required: "confirm pw is same as pw",
-            })}
-          />
+          <label>Password :</label>
+          <input type="password" {...register("password")} />
+          {errors.password && <span>{errors.password.message}</span>}
+        </div>
+
+        <div>
+          <label>Confirm Password :</label>
+          <input type="password" {...register("confirmPassword")} />
           {errors.confirmPassword && (
-            <span> {errors.confirmPassword.message}</span>
+            <span>{errors.confirmPassword.message}</span>
           )}
         </div>
+
         <button type="submit" disabled={isSubmitting}>
-          register
+          Register
         </button>
       </form>
     </div>
