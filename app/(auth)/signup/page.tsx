@@ -1,3 +1,9 @@
+import RegisterFormZod from "../_components/SignupFormZod";
+
 export default function SignupPage() {
-  return <div></div>;
+  return (
+    <div>
+      <RegisterFormZod />
+    </div>
+  );
 }
