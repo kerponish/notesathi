@@ -8,7 +8,7 @@ export default function SignupPage() {
         {/* Left Side */}
         <div className="bg-[#f7f4ff] p-10 flex flex-col justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[#5B4DFF] mb-10">
+            <h1 className="text-3xl font-bold text-[#463acc] mb-10">
               Notesathi
             </h1>
 

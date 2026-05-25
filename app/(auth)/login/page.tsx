@@ -8,14 +8,14 @@ export default function LoginPage() {
         {/* Left Side */}
         <div className="bg-[#f7f4ff] p-10 flex flex-col justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-[#5B4DFF] mb-10">
+            <h1 className="text-3xl font-bold text-[#4638dd] mb-10">
               Notesathi
             </h1>
 
             <div className="space-y-4">
-              <h2 className="text-5xl font-bold leading-tight text-[#1B1B1F]">
+              <h2 className="text-5xl font-bold leading-tight text-[#000000]">
                 Elevate your <br />
-                <span className="text-[#5B4DFF]">learning journey.</span>
+                <span className="text-[#000000]">learning journey.</span>
               </h2>
 
               <p className="text-gray-500 leading-relaxed max-w-md">
