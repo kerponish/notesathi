@@ -1,0 +1,23 @@
+[33mcommit effb3b21a672c4283d9cc0dc7ae3200607167505[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32msprint_2[m[33m)[m
+Author: Kripan Sapkota <krpnspkt@gmail.com>
+Date:   Tue Jun 9 21:03:06 2026 +0545
+
+    Remove build artifacts and dependencies from tracking
+
+[33mcommit 81c7e9a424e6be28fd5f2f09f70d2d629348fead[m
+Author: Kripan Sapkota <krpnspkt@gmail.com>
+Date:   Tue Jun 9 20:32:46 2026 +0545
+
+    cookies implement and axios used
+
+[33mcommit 4e364cc1f1ad2fc4effbcb3ce4d46d729ec1c5af[m
+Author: Kripan Sapkota <krpnspkt@gmail.com>
+Date:   Tue Jun 9 15:09:07 2026 +0545
+
+    Add  backend
+
+[33mcommit 096f16d74b731df28715feb106dfc89517788dc8[m[33m ([m[1;32mmaster[m[33m)[m
+Author: Kripan Sapkota <krpnspkt@gmail.com>
+Date:   Tue Jun 9 15:09:07 2026 +0545
+
+    Add  backend
