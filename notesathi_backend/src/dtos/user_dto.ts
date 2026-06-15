@@ -4,7 +4,6 @@ import { z } from "zod";
 export const CreateUserDto = UserSchema.pick({
   fullname: true,
   email: true,
-  username: true,
   password: true,
 }).extend({
   confirmPassword: z.string().min(6),

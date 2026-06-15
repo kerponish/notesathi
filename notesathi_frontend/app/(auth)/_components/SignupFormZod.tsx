@@ -3,8 +3,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterFormData, registerSchema } from "./schema";
+import { registerUser } from "@/lib/actions/auth-action";
+import { useRouter } from "next/navigation";
 
 export default function RegisterFormZod() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -20,13 +23,20 @@ export default function RegisterFormZod() {
     },
   });
 
-  const onSubmit = (data: RegisterFormData) => {
-    alert(
-      `Submitted data:
-${data.fullname}
-${data.email}
-${data.password}`,
-    );
+  const onSubmit = async (data: RegisterFormData) => {
+    try {
+      const response = await registerUser(data);
+      console.log(response);
+
+      if (response?.success) {
+        console.log(response.message || "Registration successful");
+        router.push("/login");
+      } else {
+        console.log(response.message || "Registration failed");
+      }
+    } catch (error) {
+      console.error("Error occurred while registering user:", error);
+    }
   };
 
   return (

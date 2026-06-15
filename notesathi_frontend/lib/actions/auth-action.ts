@@ -26,7 +26,7 @@ export async function loginUser(data: LoginFormData) {
   try {
     const result = await login(data);
     // how to send data to component
-    if (result.success) {
+    if (result) {
       // cookie implementation
       const user = result.data?.user;
       const token = result.data?.token;

@@ -3,8 +3,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormData, loginSchema } from "./schema";
+import { loginUser } from "@/lib/actions/auth-action";
+import { useRouter } from "next/navigation";
 
 export default function LoginFormZod() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -18,8 +21,14 @@ export default function LoginFormZod() {
     },
   });
 
-  const onSubmit = (data: LoginFormData) => {
-    alert("Submitted data: " + data.email + ", " + data.password);
+  const onSubmit = async (data: LoginFormData) => {
+    const result = await loginUser(data);
+    if (result) {
+      router.push("/dashboard");
+      console.log(result.message || "Login successful");
+    } else {
+      console.log("Login failed");
+    }
   };
 
   return (
