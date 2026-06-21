@@ -13,6 +13,7 @@ const UserModelSchema: Schema = new Schema<IUser>(
     fullname: { type: String, required: true },
 
     password: { type: String, required: true },
+    profilePicture: { type: String, default: "" },
     role: { type: String, enum: ["admin", "user"], default: "user" },
   },
   {

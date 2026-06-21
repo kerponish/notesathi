@@ -1,11 +1,17 @@
 import { UserMongoRepository } from "../repositories/user_repository";
-import { CreateUserDto, LoginUserDto } from "../dtos/user_dto";
+import {
+  CreateUserDto,
+  LoginUserDto,
+  UpdateUserProfileDto,
+} from "../dtos/user_dto";
 import { HttpException } from "../exceptions/http-exception";
 import bcrypt from "bcryptjs"; // to hash password
 import { IUser } from "../models/user_model";
 // jwt for token generation
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config/constant";
+import fs from "fs";
+import path from "path";
 
 const userRepository = new UserMongoRepository();
 export class UserService {
@@ -55,5 +61,76 @@ export class UserService {
       { expiresIn: "30d" },
     );
     return { user, token };
+  }
+
+  async getUserById(userId: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+    return user;
+  }
+
+  async updateProfile(userId: string, profileData: UpdateUserProfileDto) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+
+    const updatedUser = await userRepository.update(userId, profileData as any);
+    if (!updatedUser) {
+      throw new HttpException(404, "User not found");
+    }
+
+    return updatedUser;
+  }
+
+  async updateProfilePicture(userId: string, profilePicture: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+
+    const oldProfilePicture = user.profilePicture;
+    const updatedUser = await userRepository.update(userId, {
+      profilePicture,
+    } as any);
+
+    if (!updatedUser) {
+      throw new HttpException(404, "User not found");
+    }
+
+    this.deleteUploadedFile(oldProfilePicture);
+    return updatedUser;
+  }
+
+  async deleteProfilePicture(userId: string) {
+    const user = await userRepository.findById(userId);
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+
+    const oldProfilePicture = user.profilePicture;
+    const updatedUser = await userRepository.update(userId, {
+      profilePicture: "",
+    } as any);
+
+    if (!updatedUser) {
+      throw new HttpException(404, "User not found");
+    }
+
+    this.deleteUploadedFile(oldProfilePicture);
+    return updatedUser;
+  }
+
+  private deleteUploadedFile(filePath?: string) {
+    if (!filePath || !filePath.startsWith("uploads/")) {
+      return;
+    }
+
+    const absolutePath = path.join(process.cwd(), filePath);
+    if (fs.existsSync(absolutePath)) {
+      fs.unlinkSync(absolutePath);
+    }
   }
 }
