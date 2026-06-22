@@ -14,7 +14,9 @@ const userService = new UserService();
 export class UserController {
   async createUser(req: Request, res: Response) {
     try {
-      const profilePicture = req.file ? `uploads/${req.file.filename}` : undefined;
+      const profilePicture = req.file
+        ? `uploads/${req.file.filename}`
+        : undefined;
       const parseResult = CreateUserDto.safeParse(req.body);
       if (!parseResult.success) {
         throw new HttpException(400, z.prettifyError(parseResult.error));
@@ -133,6 +135,26 @@ export class UserController {
       return ApiResponseHelper.error(
         res,
         e?.message || "Failed to delete profile picture",
+        e.status || 500,
+      );
+    }
+  }
+  async whoAmI(req: Request, res: Response) {
+    try {
+      if (!req.user) {
+        throw new HttpException(401, "User not found");
+      }
+
+      return ApiResponseHelper.success(
+        res,
+        req.user,
+        200,
+        "User details fetched successfully",
+      );
+    } catch (e: Error | unknown | any) {
+      return ApiResponseHelper.error(
+        res,
+        e?.message || "Failed to fetch user details",
         e.status || 500,
       );
     }
