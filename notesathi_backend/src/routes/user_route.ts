@@ -13,6 +13,19 @@ router.post(
 );
 router.post("/login", userController.loginUser);
 router.get("/whoami", authorizedMiddleware, userController.whoAmI);
+
+router.patch(
+  "/change-password",
+  authorizedMiddleware,
+  userController.changePassword,
+);
+
+router.patch(
+  "/update",
+  authorizedMiddleware,
+  upload.single("profilePicture"),
+  userController.updateProfile,
+);
 router.get("/profile", authorizedMiddleware, userController.getProfile);
 router.patch("/profile", authorizedMiddleware, userController.updateProfile);
 router.patch(

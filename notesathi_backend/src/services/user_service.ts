@@ -3,6 +3,7 @@ import {
   CreateUserDto,
   LoginUserDto,
   UpdateUserProfileDto,
+  ChangePasswordDto,
 } from "../dtos/user_dto";
 import { HttpException } from "../exceptions/http-exception";
 import bcrypt from "bcryptjs"; // to hash password
@@ -71,15 +72,33 @@ export class UserService {
     return user;
   }
 
-  async updateProfile(userId: string, profileData: UpdateUserProfileDto) {
+  async updateProfile(
+    userId: string,
+    profileData: UpdateUserProfileDto,
+    profilePicture?: string,
+  ) {
     const user = await userRepository.findById(userId);
+
     if (!user) {
       throw new HttpException(404, "User not found");
     }
 
-    const updatedUser = await userRepository.update(userId, profileData as any);
+    const updateData: any = {
+      ...profileData,
+    };
+
+    if (profilePicture) {
+      updateData.profilePicture = profilePicture;
+    }
+
+    const updatedUser = await userRepository.update(userId, updateData);
+
     if (!updatedUser) {
       throw new HttpException(404, "User not found");
+    }
+
+    if (profilePicture && user.profilePicture) {
+      this.deleteUploadedFile(user.profilePicture);
     }
 
     return updatedUser;
@@ -132,5 +151,30 @@ export class UserService {
     if (fs.existsSync(absolutePath)) {
       fs.unlinkSync(absolutePath);
     }
+  }
+  async changePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    const user = await userRepository.findById(userId);
+
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isPasswordValid) {
+      throw new HttpException(400, "Old password is incorrect");
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    const updatedUser = await userRepository.update(userId, {
+      password: hashedPassword,
+    } as any);
+
+    return updatedUser;
   }
 }

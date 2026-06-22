@@ -9,15 +9,26 @@ export const CreateUserDto = UserSchema.pick({
 }).extend({
   confirmPassword: z.string().min(6),
 });
+
 export type CreateUserDto = z.infer<typeof CreateUserDto>;
 
 export const LoginUserDto = UserSchema.pick({
   email: true,
   password: true,
 });
+
 export type LoginUserDto = z.infer<typeof LoginUserDto>;
 
 export const UpdateUserProfileDto = UserSchema.pick({
   fullname: true,
 }).partial();
+
 export type UpdateUserProfileDto = z.infer<typeof UpdateUserProfileDto>;
+
+// NEW DTO
+export const ChangePasswordDto = z.object({
+  oldPassword: z.string().min(6),
+  newPassword: z.string().min(6),
+});
+
+export type ChangePasswordDto = z.infer<typeof ChangePasswordDto>;
