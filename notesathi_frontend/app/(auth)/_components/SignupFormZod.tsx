@@ -3,11 +3,14 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RegisterFormData, registerSchema } from "./schema";
-import { registerUser } from "@/lib/actions/auth-action";
 import { useRouter } from "next/navigation";
+import { handleRegisterUser } from "@/lib/actions/auth-action";
+
+// change path according to your folder
 
 export default function RegisterFormZod() {
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -25,17 +28,19 @@ export default function RegisterFormZod() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await registerUser(data);
+      const response = await handleRegisterUser(data);
+
       console.log(response);
 
-      if (response?.success) {
-        console.log(response.message || "Registration successful");
+      if (response.success) {
+        alert(response.message || "Registration successful");
+
         router.push("/login");
       } else {
-        console.log(response.message || "Registration failed");
+        alert(response.message || "Registration failed");
       }
     } catch (error) {
-      console.error("Error occurred while registering user:", error);
+      console.error("Registration error:", error);
     }
   };
 
@@ -51,22 +56,7 @@ export default function RegisterFormZod() {
           type="text"
           placeholder="Enter your full name"
           {...register("fullname")}
-          className="
-            w-full
-            border
-            border-gray-300
-            rounded-xl
-            px-4
-            py-3
-            bg-white
-            text-black
-            placeholder:text-gray-400
-            outline-none
-            transition
-            focus:ring-2
-            focus:ring-[#5B4DFF]
-            focus:border-[#5B4DFF]
-          "
+          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.fullname && (
@@ -84,22 +74,7 @@ export default function RegisterFormZod() {
           type="email"
           placeholder="Enter your email"
           {...register("email")}
-          className="
-            w-full
-            border
-            border-gray-300
-            rounded-xl
-            px-4
-            py-3
-            bg-white
-            text-black
-            placeholder:text-gray-400
-            outline-none
-            transition
-            focus:ring-2
-            focus:ring-[#5B4DFF]
-            focus:border-[#5B4DFF]
-          "
+          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.email && (
@@ -117,22 +92,7 @@ export default function RegisterFormZod() {
           type="password"
           placeholder="********"
           {...register("password")}
-          className="
-            w-full
-            border
-            border-gray-300
-            rounded-xl
-            px-4
-            py-3
-            bg-white
-            text-black
-            placeholder:text-gray-400
-            outline-none
-            transition
-            focus:ring-2
-            focus:ring-[#5B4DFF]
-            focus:border-[#5B4DFF]
-          "
+          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.password && (
@@ -150,22 +110,7 @@ export default function RegisterFormZod() {
           type="password"
           placeholder="********"
           {...register("confirmPassword")}
-          className="
-            w-full
-            border
-            border-gray-300
-            rounded-xl
-            px-4
-            py-3
-            bg-white
-            text-black
-            placeholder:text-gray-400
-            outline-none
-            transition
-            focus:ring-2
-            focus:ring-[#5B4DFF]
-            focus:border-[#5B4DFF]
-          "
+          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.confirmPassword && (
@@ -175,21 +120,11 @@ export default function RegisterFormZod() {
         )}
       </div>
 
-      {/* Submit Button */}
+      {/* Submit */}
       <button
         type="submit"
         disabled={isSubmitting}
-        className="
-          w-full
-          bg-[#5B4DFF]
-          text-white
-          py-3
-          rounded-xl
-          font-semibold
-          hover:opacity-90
-          transition
-          disabled:opacity-50
-        "
+        className="w-full bg-[#5B4DFF] text-white py-3 rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-50"
       >
         {isSubmitting ? "Creating Account..." : "Create Account"}
       </button>

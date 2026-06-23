@@ -3,11 +3,15 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormData, loginSchema } from "./schema";
-import { loginUser } from "@/lib/actions/auth-action";
+
 import { useRouter } from "next/navigation";
+import { handleLoginUser } from "@/lib/actions/auth-action";
+
+// change path if your actions file is located somewhere else
 
 export default function LoginFormZod() {
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -22,12 +26,20 @@ export default function LoginFormZod() {
   });
 
   const onSubmit = async (data: LoginFormData) => {
-    const result = await loginUser(data);
-    if (result) {
-      router.push("/dashboard");
-      console.log(result.message || "Login successful");
-    } else {
-      console.log("Login failed");
+    try {
+      const result = await handleLoginUser(data);
+
+      console.log("RESULT FROM SERVER ACTION:", result);
+
+      if (result.success) {
+        console.log("Login successful");
+
+        router.push("/dashboard");
+      } else {
+        console.log("Login failed:", result.message);
+      }
+    } catch (error: any) {
+      console.error("LOGIN ERROR:", error.message);
     }
   };
 
@@ -75,7 +87,11 @@ export default function LoginFormZod() {
 
           <button
             type="button"
-            className="text-sm text-[#5B4DFF] hover:underline"
+            className="
+              text-sm
+              text-[#5B4DFF]
+              hover:underline
+            "
           >
             Forgot password?
           </button>
