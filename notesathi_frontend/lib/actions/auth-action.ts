@@ -75,6 +75,13 @@ export const handleUpdateProfile = async (formData: FormData) => {
     const result = await updateProfile(formData);
 
     if (result.success) {
+      // save updated user if returned by API
+      if (result.data?.user) {
+        await storeUserData(result.data.user);
+      } else if (result.data) {
+        await storeUserData(result.data);
+      }
+
       revalidatePath("/dashboard/profile");
 
       return {
@@ -82,13 +89,13 @@ export const handleUpdateProfile = async (formData: FormData) => {
         message: result.message,
         data: result.data,
       };
-    } else {
-      return {
-        success: false,
-        message: result.message || "Failed to update profile",
-      };
     }
-  } catch (error: Error | any) {
+
+    return {
+      success: false,
+      message: result.message || "Failed to update profile",
+    };
+  } catch (error: any) {
     return {
       success: false,
       message: error?.message || "Failed to update profile",

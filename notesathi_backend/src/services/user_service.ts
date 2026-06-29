@@ -1,180 +1,132 @@
 import { UserMongoRepository } from "../repositories/user_repository";
 import {
-  CreateUserDto,
-  LoginUserDto,
-  UpdateUserProfileDto,
-  ChangePasswordDto,
+  CreateUserDTO,
+  CreateUserDTOAdmin,
+  LoginUserDTO,
+  UpdateUserDTO,
 } from "../dtos/user_dto";
-import { HttpException } from "../exceptions/http-exception";
-import bcrypt from "bcryptjs"; // to hash password
 import { IUser } from "../models/user_model";
-// jwt for token generation
+import { HttpException } from "../exceptions/http-exception";
+import bycryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../config/constant";
-import fs from "fs";
-import path from "path";
 
 const userRepository = new UserMongoRepository();
+
 export class UserService {
-  async createUser(userData: CreateUserDto) {
-    const existingUserByEmail = await userRepository.findByEmail(
-      userData.email,
-    );
-    if (existingUserByEmail) {
+  async createUser(
+    userData: CreateUserDTO | CreateUserDTOAdmin,
+  ): Promise<IUser> {
+    // validation
+    const existingEmail = await userRepository.getUserByEmail(userData.email);
+    if (existingEmail) {
       throw new HttpException(400, "Email already exists");
     }
-    // Validate password confirmation
-    if ((userData as any).password !== (userData as any).confirmPassword) {
-      throw new HttpException(400, "Passwords do not match");
-    }
-    // Hash the password before saving
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-    const userToCreate = {
-      ...userData,
-      password: hashedPassword,
-    };
-    const createdUser = await userRepository.create(userToCreate as any);
-    return createdUser;
+
+    // hash password
+    const hashedPassword = await bycryptjs.hash(userData.password, 10);
+    userData.password = hashedPassword;
+    const user = await userRepository.createUser(userData);
+    return user;
   }
 
-  async loginUser(loginData: LoginUserDto) {
-    const user = await userRepository.findByEmail(loginData.email);
-    console.log(user);
+  async loginUser(loginData: LoginUserDTO) {
+    const user = await userRepository.getUserByEmail(loginData.email);
     if (!user) {
-      throw new HttpException(400, "Invalid email or password");
+      throw new HttpException(400, "Invalid email");
     }
-    console.log(user);
-    const isPasswordValid = await bcrypt.compare(
-      loginData.password,
-      user.password,
-    ); // compare hashed password
+    const isPasswordValid = await bycryptjs.compare(
+      loginData.password, // client password
+      user.password, // database password
+    );
     if (!isPasswordValid) {
-      throw new HttpException(400, "Invalid email or password");
+      throw new HttpException(400, "Invalid password");
     }
-
     const token = jwt.sign(
-      {
-        id: user._id,
-        email: user.email,
-        role: user.role,
-      }, // payload
+      { id: user._id, email: user.email, role: user.role }, // payload
       SECRET_KEY,
       { expiresIn: "30d" },
     );
     return { user, token };
   }
+  async checkPassword(
+    userId: string,
+    currentPassword: string,
+  ): Promise<boolean> {
+    const user = await userRepository.getUserById(userId);
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+    const isPasswordValid = await bycryptjs.compare(
+      currentPassword,
+      user.password,
+    );
+    if (!isPasswordValid) {
+      throw new HttpException(400, "Current password is incorrect");
+    }
+    return isPasswordValid;
+  }
 
-  async getUserById(userId: string) {
-    const user = await userRepository.findById(userId);
+  async updateUser(id: string, userData: UpdateUserDTO): Promise<IUser> {
+    const existingUser = await userRepository.getUserById(id);
+    if (!existingUser) {
+      throw new HttpException(404, "User not found");
+    }
+    if (userData.email && userData.email !== existingUser.email) {
+      const existingEmail = await userRepository.getUserByEmail(userData.email);
+      if (existingEmail) {
+        throw new HttpException(400, "Email already exists");
+      }
+    }
+
+    if (userData.password) {
+      const hashedPassword = await bycryptjs.hash(userData.password, 10);
+      userData.password = hashedPassword;
+    }
+    const updatedUser = await userRepository.update(id, userData);
+    if (!updatedUser) {
+      throw new HttpException(500, "Failed to update user");
+    }
+    return updatedUser;
+  }
+
+  async deleteUser(id: string): Promise<boolean> {
+    const existingUser = await userRepository.getUserById(id);
+    if (!existingUser) {
+      throw new HttpException(404, "User not found");
+    }
+    const deleted = await userRepository.delete(id);
+    if (!deleted) {
+      throw new HttpException(500, "Failed to delete user");
+    }
+    return deleted;
+  }
+
+  async getUserById(id: string): Promise<IUser | null> {
+    const user = await userRepository.getUserById(id);
     if (!user) {
       throw new HttpException(404, "User not found");
     }
     return user;
   }
 
-  async updateProfile(
-    userId: string,
-    profileData: UpdateUserProfileDto,
-    profilePicture?: string,
-  ) {
-    const user = await userRepository.findById(userId);
+  async getAllUserPaginated(page?: string, limit?: string, search?: string) {
+    const currentPage = page && parseInt(page) > 0 ? parseInt(page) : 1;
+    const currentLimit = limit && parseInt(limit) > 0 ? parseInt(limit) : 10;
+    const currentSearch = search && search.trim() !== "" ? search : undefined;
 
-    if (!user) {
-      throw new HttpException(404, "User not found");
-    }
-
-    const updateData: any = {
-      ...profileData,
+    const { data, total } = await userRepository.getAllPaginated(
+      currentPage,
+      currentLimit,
+      currentSearch,
+    );
+    const totalPages = Math.ceil(total / currentLimit);
+    const pagination = {
+      page: currentPage,
+      limit: currentLimit,
+      totalPages: totalPages,
+      total: total,
     };
-
-    if (profilePicture) {
-      updateData.profilePicture = profilePicture;
-    }
-
-    const updatedUser = await userRepository.update(userId, updateData);
-
-    if (!updatedUser) {
-      throw new HttpException(404, "User not found");
-    }
-
-    if (profilePicture && user.profilePicture) {
-      this.deleteUploadedFile(user.profilePicture);
-    }
-
-    return updatedUser;
-  }
-
-  async updateProfilePicture(userId: string, profilePicture: string) {
-    const user = await userRepository.findById(userId);
-    if (!user) {
-      throw new HttpException(404, "User not found");
-    }
-
-    const oldProfilePicture = user.profilePicture;
-    const updatedUser = await userRepository.update(userId, {
-      profilePicture,
-    } as any);
-
-    if (!updatedUser) {
-      throw new HttpException(404, "User not found");
-    }
-
-    this.deleteUploadedFile(oldProfilePicture);
-    return updatedUser;
-  }
-
-  async deleteProfilePicture(userId: string) {
-    const user = await userRepository.findById(userId);
-    if (!user) {
-      throw new HttpException(404, "User not found");
-    }
-
-    const oldProfilePicture = user.profilePicture;
-    const updatedUser = await userRepository.update(userId, {
-      profilePicture: "",
-    } as any);
-
-    if (!updatedUser) {
-      throw new HttpException(404, "User not found");
-    }
-
-    this.deleteUploadedFile(oldProfilePicture);
-    return updatedUser;
-  }
-
-  private deleteUploadedFile(filePath?: string) {
-    if (!filePath || !filePath.startsWith("uploads/")) {
-      return;
-    }
-
-    const absolutePath = path.join(process.cwd(), filePath);
-    if (fs.existsSync(absolutePath)) {
-      fs.unlinkSync(absolutePath);
-    }
-  }
-  async changePassword(
-    userId: string,
-    oldPassword: string,
-    newPassword: string,
-  ) {
-    const user = await userRepository.findById(userId);
-
-    if (!user) {
-      throw new HttpException(404, "User not found");
-    }
-
-    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
-
-    if (!isPasswordValid) {
-      throw new HttpException(400, "Old password is incorrect");
-    }
-
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-    const updatedUser = await userRepository.update(userId, {
-      password: hashedPassword,
-    } as any);
-
-    return updatedUser;
+    return { data, pagination };
   }
 }

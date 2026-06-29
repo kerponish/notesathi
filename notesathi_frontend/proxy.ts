@@ -1,36 +1,40 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
+import { getTokenCookie, getUserData } from "./lib/cookies";
+const publicRoutes = ["/login", "/register"];
+const adminRoutes = ["/admin"];
 
-const PUBLIC_ROUTES = ["/", "/login", "/signup", "/forgot-password"];
+export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl; // which path
+  const token = await getTokenCookie();
+  const user = await getUserData();
 
-export function proxy(request: NextRequest) {
-  const token = request.cookies.get("auth_token")?.value;
-
-  const { pathname } = request.nextUrl;
-
-  const isPublicRoute = PUBLIC_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route),
   );
-
-  // Not logged in
   if (!token && !isPublicRoute) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Already logged in
-  if (token && (pathname === "/login" || pathname === "/register")) {
+  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
+  if (token && user) {
+    if (isAdminRoute && user.role !== "admin") {
+      return NextResponse.redirect(new URL("/unauthorized", request.url));
+    }
+  }
+
+  if (token && isPublicRoute) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  return NextResponse.next();
+  // return NextResponse.rewrite(new URL("/login", request.url)); // rewrite to login route
+  return NextResponse.next(); // continue to page
 }
 
 export const config = {
   matcher: [
-    "/dashboard/:path*",
-    "/profile/:path*",
-    "/settings/:path*",
+    "/register", // which path to apply
+    "/dashboard/:path*", // match all dashboard routes
     "/login",
-    "/signup",
-    "/register",
+    "/admin/:path*", // match all admin routes
   ],
 };
