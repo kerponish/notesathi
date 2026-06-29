@@ -8,6 +8,7 @@ export const CreateUserDTO = UserSchema.pick({
   email: true,
   password: true,
 });
+
 export type CreateUserDTO = z.infer<typeof CreateUserDTO>;
 
 export const CreateUserDTOAdmin = UserSchema.pick({
@@ -15,6 +16,7 @@ export const CreateUserDTOAdmin = UserSchema.pick({
   email: true,
 
   password: true,
+
   role: true,
 });
 export type CreateUserDTOAdmin = z.infer<typeof CreateUserDTOAdmin>;

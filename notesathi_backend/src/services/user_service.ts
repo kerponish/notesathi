@@ -129,4 +129,26 @@ export class UserService {
     };
     return { data, pagination };
   }
+  async changePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<IUser> {
+    const user = await userRepository.getUserById(userId);
+    if (!user) {
+      throw new HttpException(404, "User not found");
+    }
+    const isPasswordValid = await bycryptjs.compare(oldPassword, user.password);
+    if (!isPasswordValid) {
+      throw new HttpException(400, "Current password is incorrect");
+    }
+    const hashedNewPassword = await bycryptjs.hash(newPassword, 10);
+    const updatedUser = await userRepository.update(userId, {
+      password: hashedNewPassword,
+    });
+    if (!updatedUser) {
+      throw new HttpException(500, "Failed to update password");
+    }
+    return updatedUser;
+  }
 }

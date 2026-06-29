@@ -28,7 +28,13 @@ export default function RegisterFormZod() {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      const response = await handleRegisterUser(data);
+      console.log("Form data:", data); // Log the form data for debugging
+      const response = await handleRegisterUser({
+        fullname: data.fullname,
+        email: data.email,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      });
 
       console.log(response);
 
@@ -38,6 +44,7 @@ export default function RegisterFormZod() {
         router.push("/login");
       } else {
         alert(response.message || "Registration failed");
+        console.log("Registration failed:", response.message);
       }
     } catch (error) {
       console.error("Registration error:", error);

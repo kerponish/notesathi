@@ -9,6 +9,7 @@ import { UpdatePasswordFormData } from "@/app/dashboard/_components/schema";
 export const register = async (data: RegisterFormData) => {
   try {
     const response = await axiosInstance.post(API.AUTH.REGISTER, data);
+    console.log("API RESPONSE:", response.data);
 
     return response.data;
   } catch (error: any) {

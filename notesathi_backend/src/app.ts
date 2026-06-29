@@ -4,6 +4,7 @@ import { HttpException } from "./exceptions/http-exception";
 import cors from "cors";
 import userRoutes from "./routes/user_route";
 import path from "path";
+import adminUserRoutes from "./routes/admin/user_routes";
 
 const app: Application = express();
 let corsOptions = {
@@ -16,6 +17,8 @@ app.use(cors(corsOptions));
 app.use(express.json()); // use json as request
 app.use(express.urlencoded({ extended: true })); //use form-urlencoded as request
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+
+app.use("/api/admin/users", adminUserRoutes);
 
 app.use("/api/users", userRoutes);
 

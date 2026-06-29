@@ -32,10 +32,8 @@ export default function UserForm() {
       console.log("Submitting data:", data); // Log the form data for debugging
       try {
         let result = await handleCreateUser({
-          firstName: data.firstName,
-          lastName: data.lastName,
+          fullname: data.fullname,
           email: data.email,
-          username: data.username,
           role: data.role,
           password: data.password,
         });

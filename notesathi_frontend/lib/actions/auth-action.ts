@@ -22,6 +22,7 @@ export const handleRegisterUser = async (data: RegisterFormData) => {
     if (result.success) {
       return { success: true, message: result.message, data: result.data };
     } else {
+      console.log("Registration failed:", result.message);
       return {
         success: false,
         message: result.message || "Registration failed",

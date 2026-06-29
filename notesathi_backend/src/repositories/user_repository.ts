@@ -2,7 +2,7 @@ import { UserModel, IUser } from "../models/user_model";
 
 export interface IUserRepository {
   getUserByEmail(email: string): Promise<IUser | null>;
-  getUserByUsername(username: string): Promise<IUser | null>;
+
   // 5 common mandatory methods for a repository
   createUser(user: Partial<IUser>): Promise<IUser>;
   getUserById(id: string): Promise<IUser | null>;
@@ -24,10 +24,7 @@ export class UserMongoRepository implements IUserRepository {
     const found = await UserModel.findOne({ email });
     return found;
   }
-  async getUserByUsername(username: string): Promise<IUser | null> {
-    const found = await UserModel.findOne({ username });
-    return found;
-  }
+
   async createUser(user: Partial<IUser>): Promise<IUser> {
     const created = await UserModel.create(user);
     return created;

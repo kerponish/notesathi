@@ -2,10 +2,10 @@ import { UserService } from "../services/user_service";
 import { HttpException } from "../exceptions/http-exception";
 import { z } from "zod";
 import {
-  CreateUserDto,
-  LoginUserDto,
-  UpdateUserProfileDto,
-  ChangePasswordDto,
+  CreateUserDTO,
+  LoginUserDTO,
+  UpdateUserDTO,
+  UpdatePasswordDTO,
 } from "../dtos/user_dto";
 import { ApiResponseHelper } from "../utils/api-response";
 import { Request, Response } from "express";
@@ -15,11 +15,8 @@ const userService = new UserService();
 export class UserController {
   async createUser(req: Request, res: Response) {
     try {
-      const profilePicture = req.file
-        ? `uploads/${req.file.filename}`
-        : undefined;
-
-      const parseResult = CreateUserDto.safeParse(req.body);
+      console.log("Request body:", req.body); // Log the request body for debugging
+      const parseResult = CreateUserDTO.safeParse(req.body);
 
       if (!parseResult.success) {
         throw new HttpException(400, z.prettifyError(parseResult.error));
@@ -27,10 +24,9 @@ export class UserController {
 
       const createdUser = await userService.createUser({
         ...parseResult.data,
-        profilePicture,
       });
 
-      return ApiResponseHelper.success(res, createdUser, 201, "User created");
+      return ApiResponseHelper.success(res, createdUser, "User created", 201);
     } catch (e: Error | unknown | any) {
       return ApiResponseHelper.error(
         res,
@@ -42,7 +38,7 @@ export class UserController {
 
   async loginUser(req: Request, res: Response) {
     try {
-      const parseResult = LoginUserDto.safeParse(req.body);
+      const parseResult = LoginUserDTO.safeParse(req.body);
 
       if (!parseResult.success) {
         throw new HttpException(400, z.prettifyError(parseResult.error));
@@ -53,8 +49,9 @@ export class UserController {
       return ApiResponseHelper.success(
         res,
         { user, token },
-        200,
+
         "Login successful",
+        201,
       );
     } catch (e: Error | unknown | any) {
       return ApiResponseHelper.error(
@@ -71,7 +68,7 @@ export class UserController {
 
       const user = await userService.getUserById(userId.toString());
 
-      return ApiResponseHelper.success(res, user, 200, "Profile fetched");
+      return ApiResponseHelper.success(res, user, "Profile fetched", 201);
     } catch (e: Error | unknown | any) {
       return ApiResponseHelper.error(
         res,
@@ -82,7 +79,7 @@ export class UserController {
   }
   async changePassword(req: Request, res: Response) {
     try {
-      const parseResult = ChangePasswordDto.safeParse(req.body);
+      const parseResult = UpdatePasswordDTO.safeParse(req.body);
 
       if (!parseResult.success) {
         throw new HttpException(400, z.prettifyError(parseResult.error));
@@ -92,15 +89,15 @@ export class UserController {
 
       const user = await userService.changePassword(
         userId.toString(),
-        parseResult.data.oldPassword,
+        parseResult.data.currentPassword,
         parseResult.data.newPassword,
       );
 
       return ApiResponseHelper.success(
         res,
         user,
-        200,
         "Password updated successfully",
+        201,
       );
     } catch (e: any) {
       return ApiResponseHelper.error(
@@ -113,7 +110,7 @@ export class UserController {
 
   async updateProfile(req: Request, res: Response) {
     try {
-      const parseResult = UpdateUserProfileDto.safeParse(req.body);
+      const parseResult = UpdateUserDTO.safeParse(req.body);
 
       if (!parseResult.success) {
         throw new HttpException(400, z.prettifyError(parseResult.error));
@@ -121,67 +118,16 @@ export class UserController {
 
       const userId = (req.user as any)._id || (req.user as any).id;
 
-      const user = await userService.updateProfile(
+      const user = await userService.updateUser(
         userId.toString(),
         parseResult.data,
       );
 
-      return ApiResponseHelper.success(res, user, 200, "Profile updated");
+      return ApiResponseHelper.success(res, user, "Profile updated", 201);
     } catch (e: Error | unknown | any) {
       return ApiResponseHelper.error(
         res,
         e?.message || "Failed to update profile",
-        e.status || 500,
-      );
-    }
-  }
-
-  async updateProfilePicture(req: Request, res: Response) {
-    try {
-      if (!req.file) {
-        throw new HttpException(400, "Profile picture is required");
-      }
-
-      const userId = (req.user as any)._id || (req.user as any).id;
-
-      const profilePicture = `uploads/${req.file.filename}`;
-
-      const user = await userService.updateProfilePicture(
-        userId.toString(),
-        profilePicture,
-      );
-
-      return ApiResponseHelper.success(
-        res,
-        user,
-        200,
-        "Profile picture updated",
-      );
-    } catch (e: Error | unknown | any) {
-      return ApiResponseHelper.error(
-        res,
-        e?.message || "Failed to update profile picture",
-        e.status || 500,
-      );
-    }
-  }
-
-  async deleteProfilePicture(req: Request, res: Response) {
-    try {
-      const userId = (req.user as any)._id || (req.user as any).id;
-
-      const user = await userService.deleteProfilePicture(userId.toString());
-
-      return ApiResponseHelper.success(
-        res,
-        user,
-        200,
-        "Profile picture deleted",
-      );
-    } catch (e: Error | unknown | any) {
-      return ApiResponseHelper.error(
-        res,
-        e?.message || "Failed to delete profile picture",
         e.status || 500,
       );
     }
@@ -196,8 +142,9 @@ export class UserController {
       return ApiResponseHelper.success(
         res,
         req.user,
-        200,
+
         "User details fetched successfully",
+        201,
       );
     } catch (e: Error | unknown | any) {
       return ApiResponseHelper.error(
