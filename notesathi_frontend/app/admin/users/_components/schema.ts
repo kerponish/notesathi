@@ -9,16 +9,10 @@ const ACCEPTED_IMAGE_TYPES = [
 ];
 
 const base = {
-  firstName: z
+  fullname: z
     .string("Must be a valid string")
-    .min(2, { message: "Minimum 2 characters" }),
-  lastName: z
-    .string("Must be a valid string")
-    .min(2, { message: "Minimum 2 characters" }),
+    .min(8, { message: "Minimum 8 characters" }),
   email: z.email({ message: "Invalid email address" }),
-  username: z
-    .string("Must be a valid string")
-    .min(3, { message: "Minimum 3 characters" }),
   role: z.enum(["user", "admin"]),
 };
 
@@ -33,15 +27,16 @@ export type CreateUserFormData = z.infer<typeof createUserSchema>;
 
 // edit mirrors update-profile: multipart with optional image, no password
 export const editUserSchema = z.object({
-  ...base,
+  fullname: z.string().min(3),
+
+  email: z.email(),
+
+  role: z.enum(["user", "admin"]),
+
   image: z
     .instanceof(File)
     .optional()
-    .refine((file) => !file || file.size <= MAX_FILE_SIZE, {
-      message: "Max file size is 5MB",
-    })
-    .refine((file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type), {
-      message: "Only .jpg, .jpeg, .png and .webp formats are supported",
-    }),
+    .refine((file) => !file || file.size <= MAX_FILE_SIZE)
+    .refine((file) => !file || ACCEPTED_IMAGE_TYPES.includes(file.type)),
 });
 export type EditUserFormData = z.infer<typeof editUserSchema>;

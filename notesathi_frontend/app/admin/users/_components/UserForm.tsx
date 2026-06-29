@@ -1,153 +1,123 @@
 "use client";
+
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { createUserSchema } from "./schema";
+import { useTransition } from "react";
+
 import { handleCreateUser } from "@/lib/actions/admin/user-action";
 
-const fieldClass =
-  "h-12 w-full border border-hairline bg-surface-card px-4 text-on-dark placeholder:text-muted outline-none transition-colors focus:border-on-dark";
-const labelClass =
-  "mb-2 block text-xs font-bold uppercase tracking-[1.5px] text-body";
-const errClass = "mt-1 block text-sm text-m-red";
+interface FormData {
+  fullname: string;
+  email: string;
+  password: string;
+  role: string;
+}
 
 export default function UserForm() {
-  const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState("");
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<any>({
-    resolver: zodResolver(createUserSchema),
+  const [isPending, startTransition] = useTransition();
+
+  const { register, handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      role: "user",
+    },
   });
 
-  const onSubmit = (data: any) => {
-    setError("");
+  const onSubmit = (data: FormData) => {
     startTransition(async () => {
-      console.log("Submitting data:", data); // Log the form data for debugging
-      try {
-        let result = await handleCreateUser({
-          fullname: data.fullname,
-          email: data.email,
-          role: data.role,
-          password: data.password,
-        });
-        if (!result.success) throw new Error(result.message);
+      const result = await handleCreateUser(data);
+
+      if (result.success) {
         toast.success("User created successfully");
         router.push("/admin/users");
         router.refresh();
-      } catch (err: any) {
-        toast.error(err?.message);
-        setError(err?.message || "Something went wrong");
+      } else {
+        toast.error(result.message);
       }
     });
   };
 
   return (
-    <div className="w-full max-w-md">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {error && (
-          <div className="mb-6 border border-m-red bg-m-red/10 px-4 py-3 text-sm text-m-red">
-            {error}
-          </div>
-        )}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="grid grid-cols-1 gap-6 md:grid-cols-2"
+    >
+      {/* Full Name */}
+      <div className="md:col-span-2">
+        <label className="mb-2 block text-sm font-semibold text-gray-700">
+          Full Name
+        </label>
 
-        <div className="mb-5">
-          <label className={labelClass}>Email</label>
-          <input
-            type="email"
-            {...register("email")}
-            placeholder="you@example.com"
-            className={fieldClass}
-          />
-          {errors.email && (
-            <span className={errClass}>{errors.email.message as string}</span>
-          )}
-        </div>
+        <input
+          {...register("fullname")}
+          placeholder="John Doe"
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+      </div>
 
-        <div className="mb-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <div>
-            <label className={labelClass}>First Name</label>
-            <input
-              type="text"
-              {...register("firstName")}
-              placeholder="Jane"
-              className={fieldClass}
-            />
-            {errors.firstName && (
-              <span className={errClass}>
-                {errors.firstName.message as string}
-              </span>
-            )}
-          </div>
-          <div>
-            <label className={labelClass}>Last Name</label>
-            <input
-              type="text"
-              {...register("lastName")}
-              placeholder="Doe"
-              className={fieldClass}
-            />
-            {errors.lastName && (
-              <span className={errClass}>
-                {errors.lastName.message as string}
-              </span>
-            )}
-          </div>
-        </div>
+      {/* Email */}
+      <div className="md:col-span-2">
+        <label className="mb-2 block text-sm font-semibold text-gray-700">
+          Email Address
+        </label>
 
-        <div className="mb-5">
-          <label className={labelClass}>Username</label>
-          <input
-            type="text"
-            {...register("username")}
-            placeholder="janedoe"
-            className={fieldClass}
-          />
-          {errors.username && (
-            <span className={errClass}>
-              {errors.username.message as string}
-            </span>
-          )}
-        </div>
+        <input
+          type="email"
+          {...register("email")}
+          placeholder="john@gmail.com"
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+      </div>
 
-        <div className="mb-5">
-          <label className={labelClass}>Role</label>
-          <select {...register("role")} className={fieldClass}>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-          {errors.role && (
-            <span className={errClass}>{errors.role.message as string}</span>
-          )}
-        </div>
-        <div className="mb-5">
-          <label className={labelClass}>Password</label>
-          <input
-            type="password"
-            {...register("password")}
-            placeholder="••••••••"
-            className={fieldClass}
-          />
-          {errors.password && (
-            <span className={errClass}>
-              {errors.password.message as string}
-            </span>
-          )}
-        </div>
+      {/* Password */}
+      <div>
+        <label className="mb-2 block text-sm font-semibold text-gray-700">
+          Password
+        </label>
+
+        <input
+          type="password"
+          {...register("password")}
+          placeholder="••••••••"
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        />
+      </div>
+
+      {/* Role */}
+      <div>
+        <label className="mb-2 block text-sm font-semibold text-gray-700">
+          Role
+        </label>
+
+        <select
+          {...register("role")}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      {/* Buttons */}
+      <div className="mt-4 flex justify-end gap-4 md:col-span-2">
+        <button
+          type="button"
+          onClick={() => router.push("/admin/users")}
+          className="rounded-xl border border-gray-300 px-6 py-3 font-medium text-gray-700 transition hover:bg-gray-100"
+        >
+          Cancel
+        </button>
+
         <button
           type="submit"
-          disabled={isSubmitting || isPending}
-          className="flex h-12 w-full items-center justify-center bg-on-dark text-xs font-bold uppercase tracking-[1.5px] text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
+          disabled={isPending}
+          className="rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
         >
-          {isPending ? "Creating..." : "Create user"}
+          {isPending ? "Creating..." : "Create User"}
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }

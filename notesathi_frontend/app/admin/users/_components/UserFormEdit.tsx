@@ -1,249 +1,168 @@
 "use client";
-import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRef, useState, useTransition } from "react";
+
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import { editUserSchema } from "./schema";
+
 import { handleUpdateUser } from "@/lib/actions/admin/user-action";
 
-const fieldClass =
-  "h-12 w-full border border-hairline bg-surface-card px-4 text-on-dark placeholder:text-muted outline-none transition-colors focus:border-on-dark";
-const labelClass =
-  "mb-2 block text-xs font-bold uppercase tracking-[1.5px] text-body";
-const errClass = "mt-1 block text-sm text-m-red";
+interface Props {
+  user: any;
+}
 
-export default function UserFormEdit({ user }: { user?: any }) {
-  const [isPending, startTransition] = useTransition();
-  const [error, setError] = useState("");
+interface FormData {
+  fullname: string;
+  email: string;
+  role: string;
+  profilePicture?: FileList;
+}
+
+export default function UserFormEdit({ user }: Props) {
   const router = useRouter();
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-  } = useForm<any>({
-    resolver: zodResolver(editUserSchema),
+  const [isPending, startTransition] = useTransition();
+
+  const [preview, setPreview] = useState<string | null>(
+    user.profilePicture
+      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.profilePicture}`
+      : null,
+  );
+
+  const { register, handleSubmit } = useForm<FormData>({
     defaultValues: {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-      username: user?.username || "",
-      role: user?.role || "user",
-      password: "",
+      fullname: user.fullname,
+      email: user.email,
+      role: user.role,
     },
   });
 
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const onSubmit = (data: FormData) => {
+    const formData = new FormData();
 
-  const handleImageChange = (
-    file: File | undefined,
-    onChange: (file: File | undefined) => void,
-  ) => {
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setPreviewImage(reader.result as string);
-      reader.readAsDataURL(file);
-    } else {
-      setPreviewImage(null);
+    formData.append("fullname", data.fullname);
+    formData.append("email", data.email);
+    formData.append("role", data.role);
+
+    if (data.profilePicture?.[0]) {
+      formData.append("profilePicture", data.profilePicture[0]);
     }
-    onChange(file);
-  };
 
-  const handleDismissImage = (onChange?: (file: File | undefined) => void) => {
-    setPreviewImage(null);
-    onChange?.(undefined);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const onSubmit = (data: any) => {
-    setError("");
     startTransition(async () => {
-      try {
-        const formdata = new FormData();
-        formdata.append("firstName", data.firstName || "");
-        formdata.append("lastName", data.lastName || "");
-        formdata.append("email", data.email || "");
-        formdata.append("username", data.username || "");
-        formdata.append("role", data.role || "user");
-        if (data.image) formdata.append("profileImage", data.image);
-        let result = await handleUpdateUser(user._id, formdata);
+      const result = await handleUpdateUser(user._id, formData);
 
-        if (!result.success) throw new Error(result.message);
+      if (result.success) {
         toast.success("User updated successfully");
         router.push("/admin/users");
         router.refresh();
-      } catch (err: any) {
-        toast.error(err?.message);
-        setError(err?.message || "Something went wrong");
+      } else {
+        toast.error(result.message);
       }
     });
   };
 
   return (
-    <div className="w-full max-w-md">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        {error && (
-          <div className="mb-6 border border-m-red bg-m-red/10 px-4 py-3 text-sm text-m-red">
-            {error}
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="grid grid-cols-1 gap-6 md:grid-cols-2"
+    >
+      {/* Avatar */}
+
+      <div className="md:col-span-2 flex justify-center">
+        {preview ? (
+          <Image
+            src={preview}
+            alt="Profile"
+            width={140}
+            height={140}
+            className="rounded-full border object-cover"
+          />
+        ) : (
+          <div className="flex h-36 w-36 items-center justify-center rounded-full bg-slate-200 text-5xl font-bold text-slate-600">
+            {user.fullname.charAt(0)}
           </div>
         )}
+      </div>
 
-        <>
-          <div className="mb-4">
-            {previewImage ? (
-              <div className="relative h-24 w-24">
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className="h-24 w-24 rounded-full object-cover"
-                />
-                <Controller
-                  name="image"
-                  control={control}
-                  render={({ field: { onChange } }) => (
-                    <button
-                      type="button"
-                      onClick={() => handleDismissImage(onChange)}
-                      className="absolute right-0 top-0 flex h-6 w-6 items-center justify-center rounded-full bg-m-red text-sm text-white"
-                    >
-                      ✕
-                    </button>
-                  )}
-                />
-              </div>
-            ) : user?.imageUrl ? (
-              <Image
-                src={process.env.NEXT_PUBLIC_API_BASE_URL + user.imageUrl}
-                alt="Profile"
-                width={96}
-                height={96}
-                className="h-24 w-24 rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-surface-elevated text-xs text-muted">
-                No Image
-              </div>
-            )}
-          </div>
+      {/* Upload */}
 
-          <div className="mb-5">
-            <label className={labelClass}>Profile Image</label>
-            <Controller
-              name="image"
-              control={control}
-              render={({ field: { onChange } }) => (
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  onChange={(e) =>
-                    handleImageChange(e.target.files?.[0], onChange)
-                  }
-                  accept=".jpg,.jpeg,.png,.webp"
-                  className="text-sm text-muted"
-                />
-              )}
-            />
-            {errors.image && (
-              <span className={errClass}>{errors.image.message as string}</span>
-            )}
-          </div>
-        </>
-        <div className="mb-5">
-          <label className={labelClass}>Email</label>
-          <input
-            type="email"
-            {...register("email")}
-            placeholder="you@example.com"
-            className={fieldClass}
-          />
-          {errors.email && (
-            <span className={errClass}>{errors.email.message as string}</span>
-          )}
-        </div>
+      <div className="md:col-span-2">
+        <label className="mb-2 block text-sm font-semibold">
+          Profile Picture
+        </label>
 
-        <div className="mb-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
-          <div>
-            <label className={labelClass}>First Name</label>
-            <input
-              type="text"
-              {...register("firstName")}
-              placeholder="Jane"
-              className={fieldClass}
-            />
-            {errors.firstName && (
-              <span className={errClass}>
-                {errors.firstName.message as string}
-              </span>
-            )}
-          </div>
-          <div>
-            <label className={labelClass}>Last Name</label>
-            <input
-              type="text"
-              {...register("lastName")}
-              placeholder="Doe"
-              className={fieldClass}
-            />
-            {errors.lastName && (
-              <span className={errClass}>
-                {errors.lastName.message as string}
-              </span>
-            )}
-          </div>
-        </div>
+        <input
+          type="file"
+          accept="image/*"
+          {...register("profilePicture")}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
 
-        <div className="mb-5">
-          <label className={labelClass}>Username</label>
-          <input
-            type="text"
-            {...register("username")}
-            placeholder="janedoe"
-            className={fieldClass}
-          />
-          {errors.username && (
-            <span className={errClass}>
-              {errors.username.message as string}
-            </span>
-          )}
-        </div>
+            if (file) {
+              setPreview(URL.createObjectURL(file));
+            }
+          }}
+          className="block w-full rounded-xl border p-3"
+        />
+      </div>
 
-        <div className="mb-5">
-          <label className={labelClass}>Role</label>
-          <select {...register("role")} className={fieldClass}>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
-          {errors.role && (
-            <span className={errClass}>{errors.role.message as string}</span>
-          )}
-        </div>
-        <div className="mb-5">
-          <label className={labelClass}>Password</label>
-          <input
-            type="password"
-            {...register("password")}
-            placeholder="••••••••"
-            className={fieldClass}
-          />
-          {errors.password && (
-            <span className={errClass}>
-              {errors.password.message as string}
-            </span>
-          )}
-        </div>
+      {/* Full Name */}
+
+      <div className="md:col-span-2">
+        <label className="mb-2 block text-sm font-semibold">Full Name</label>
+
+        <input
+          {...register("fullname")}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+        />
+      </div>
+
+      {/* Email */}
+
+      <div className="md:col-span-2">
+        <label className="mb-2 block text-sm font-semibold">Email</label>
+
+        <input
+          type="email"
+          {...register("email")}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+        />
+      </div>
+
+      {/* Role */}
+
+      <div className="md:col-span-2">
+        <label className="mb-2 block text-sm font-semibold">Role</label>
+
+        <select
+          {...register("role")}
+          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+      </div>
+
+      {/* Buttons */}
+
+      <div className="md:col-span-2 mt-4 flex justify-end gap-4">
+        <button
+          type="button"
+          onClick={() => router.push("/admin/users")}
+          className="rounded-xl border border-gray-300 px-6 py-3 hover:bg-gray-100"
+        >
+          Cancel
+        </button>
 
         <button
           type="submit"
-          disabled={isSubmitting || isPending}
-          className="flex h-12 w-full items-center justify-center bg-on-dark text-xs font-bold uppercase tracking-[1.5px] text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
+          disabled={isPending}
+          className="rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white hover:bg-blue-700"
         >
-          {isPending ? "Saving..." : "Save changes"}
+          {isPending ? "Updating..." : "Update User"}
         </button>
-      </form>
-    </div>
+      </div>
+    </form>
   );
 }

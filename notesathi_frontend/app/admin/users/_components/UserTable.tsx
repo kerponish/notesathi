@@ -1,219 +1,164 @@
 "use client";
-import { useState, useTransition } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+
 import Link from "next/link";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Modal from "../../_components/Modal";
+
 import { handleDeleteUser } from "@/lib/actions/admin/user-action";
+import DeleteUserModal from "./DeleteUserModal";
 
-export default function UserTable({
-  data,
-  pagination,
-  search,
-}: {
-  data: any[];
-  pagination: any;
-  search: string;
-}) {
+interface Props {
+  users: any[];
+}
+
+export default function UsersTable({ users }: Props) {
   const router = useRouter();
-  const params = useSearchParams();
+
   const [isPending, startTransition] = useTransition();
-  const [target, setTarget] = useState<any | null>(null); // user pending deletion
 
-  const page = pagination?.page ?? 1;
-  const limit = pagination?.limit ?? 10;
-  const totalPages = pagination?.totalPages ?? 1;
-  const total = pagination?.total ?? 0;
+  const [open, setOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
 
-  // push a new query string, keeping existing params
-  const setQuery = (next: Record<string, string | number>) => {
-    const q = new URLSearchParams(params.toString());
-    Object.entries(next).forEach(([k, v]) => q.set(k, String(v)));
-    router.push(`/admin/users?${q.toString()}`);
-  };
+  const handleDelete = () => {
+    if (!selectedUser) return;
 
-  const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const value = new FormData(e.currentTarget).get("search") as string;
-    setQuery({ search: value ?? "", page: 1 });
-  };
-
-  const onDelete = () => {
-    if (!target) return;
     startTransition(async () => {
-      const result = await handleDeleteUser(target._id);
+      const result = await handleDeleteUser(selectedUser._id);
+
       if (result.success) {
-        toast.success("User deleted");
-        setTarget(null);
+        toast.success("User deleted successfully");
+
+        setOpen(false);
+        setSelectedUser(null);
+
+        router.refresh();
       } else {
-        toast.error(result.message || "Failed to delete user");
+        toast.error(result.message);
       }
     });
   };
 
   return (
-    <div className="mx-auto w-full max-w-[1100px]">
-      <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h2 className="text-3xl font-bold text-on-dark">Users</h2>
-          <p className="text-sm text-muted">{total} total</p>
-        </div>
-        <Link
-          href="/admin/users/create"
-          className="flex h-10 items-center bg-on-dark px-4 text-xs font-bold uppercase tracking-[1.5px] text-canvas transition-opacity hover:opacity-90"
-        >
-          New user
-        </Link>
-      </div>
-
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <form onSubmit={onSearch} className="flex w-full max-w-sm gap-2">
-          <input
-            name="search"
-            defaultValue={search}
-            placeholder="Search users..."
-            className="h-10 w-full border border-hairline bg-surface-card px-3 text-sm text-on-dark placeholder:text-muted outline-none focus:border-on-dark"
-          />
-          <button className="h-10 border border-hairline px-4 text-xs font-bold uppercase tracking-[1.5px] text-body transition-colors hover:text-on-dark">
-            Search
-          </button>
-        </form>
-
-        <label className="flex items-center gap-2 text-xs uppercase tracking-[1.5px] text-muted">
-          Rows
-          <select
-            value={limit}
-            onChange={(e) => setQuery({ limit: e.target.value, page: 1 })}
-            className="h-10 border border-hairline bg-surface-card px-2 text-sm text-on-dark outline-none focus:border-on-dark"
-          >
-            {[5, 10, 20, 50].map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-        </label>
-      </div>
-
-      <div className="overflow-x-auto border border-hairline">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-hairline bg-surface-soft text-xs uppercase tracking-[1px] text-muted">
+    <>
+      <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
+        <table className="w-full">
+          <thead className="bg-[#246BFD] text-white">
             <tr>
-              <th className="px-4 py-3 font-medium">Name</th>
-              <th className="px-4 py-3 font-medium">Email</th>
-              <th className="px-4 py-3 font-medium">Username</th>
-              <th className="px-4 py-3 font-medium">Role</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="p-5 text-left">User</th>
+              <th>Role</th>
+              <th>Joined</th>
+              <th>Status</th>
+              <th className="text-center">Actions</th>
             </tr>
           </thead>
+
           <tbody>
-            {data?.length ? (
-              data.map((u) => (
+            {users.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="py-12 text-center text-gray-500">
+                  No users found.
+                </td>
+              </tr>
+            ) : (
+              users.map((user) => (
                 <tr
-                  key={u._id}
-                  className="border-b border-hairline last:border-0 hover:bg-surface-soft"
+                  key={user._id}
+                  className="border-b transition hover:bg-blue-50"
                 >
-                  <td className="px-4 py-3 text-on-dark">
-                    {u.firstName} {u.lastName}
+                  {/* User */}
+                  <td className="p-5">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#246BFD] font-bold text-white">
+                        {user.fullname
+                          ?.split(" ")
+                          .map((x: string) => x[0])
+                          .join("")
+                          .substring(0, 2)
+                          .toUpperCase()}
+                      </div>
+
+                      <div>
+                        <p className="font-semibold text-gray-800">
+                          {user.fullname}
+                        </p>
+
+                        <p className="text-sm text-gray-500">{user.email}</p>
+                      </div>
+                    </div>
                   </td>
-                  <td className="px-4 py-3 text-body">{u.email}</td>
-                  <td className="px-4 py-3 text-body">{u.username}</td>
-                  <td className="px-4 py-3">
+
+                  {/* Role */}
+                  <td>
                     <span
-                      className={`inline-block rounded px-2 py-0.5 text-xs uppercase tracking-[1px] ${
-                        u.role === "admin"
-                          ? "bg-electric-blue/20 text-bmw-blue"
-                          : "bg-surface-elevated text-muted"
+                      className={`rounded-full px-4 py-1 text-xs font-semibold ${
+                        user.role === "admin"
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-gray-100 text-gray-700"
                       }`}
                     >
-                      {u.role}
+                      {user.role}
                     </span>
                   </td>
-                  <td className="px-4 py-3">
-                    <div className="flex justify-end gap-3 text-xs font-medium uppercase tracking-[1px]">
+
+                  {/* Joined */}
+                  <td className="text-gray-600">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </td>
+
+                  {/* Status */}
+                  <td>
+                    <span className="rounded-full bg-green-100 px-4 py-1 text-xs font-semibold text-green-700">
+                      Active
+                    </span>
+                  </td>
+
+                  {/* Actions */}
+                  <td>
+                    <div className="flex justify-center gap-3">
                       <Link
-                        href={`/admin/users/${u._id}`}
-                        className="text-muted hover:text-on-dark"
+                        href={`/admin/users/${user._id}`}
+                        className="rounded-lg bg-blue-500 p-2 text-white transition hover:bg-blue-600"
                       >
-                        View
+                        <Eye size={18} />
                       </Link>
+
                       <Link
-                        href={`/admin/users/${u._id}/edit`}
-                        className="text-muted hover:text-on-dark"
+                        href={`/admin/users/${user._id}/edit`}
+                        className="rounded-lg bg-yellow-500 p-2 text-white transition hover:bg-yellow-600"
                       >
-                        Edit
+                        <Pencil size={18} />
                       </Link>
+
                       <button
-                        onClick={() => setTarget(u)}
-                        className="text-muted hover:text-m-red"
+                        onClick={() => {
+                          setSelectedUser(user);
+                          setOpen(true);
+                        }}
+                        className="rounded-lg bg-red-500 p-2 text-white transition hover:bg-red-600"
                       >
-                        Delete
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </td>
                 </tr>
               ))
-            ) : (
-              <tr>
-                <td colSpan={5} className="px-4 py-12 text-center text-muted">
-                  No users found
-                </td>
-              </tr>
             )}
           </tbody>
         </table>
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-sm text-muted">
-        <span>
-          Page {page} of {totalPages}
-        </span>
-        <div className="flex gap-2">
-          <button
-            disabled={page <= 1}
-            onClick={() => setQuery({ page: page - 1 })}
-            className="h-9 border border-hairline px-3 text-xs uppercase tracking-[1px] text-body transition-colors hover:text-on-dark disabled:opacity-40"
-          >
-            Prev
-          </button>
-          <button
-            disabled={page >= totalPages}
-            onClick={() => setQuery({ page: page + 1 })}
-            className="h-9 border border-hairline px-3 text-xs uppercase tracking-[1px] text-body transition-colors hover:text-on-dark disabled:opacity-40"
-          >
-            Next
-          </button>
-        </div>
-      </div>
-
-      <Modal
-        open={!!target}
-        onClose={() => setTarget(null)}
-        title="Delete user"
-      >
-        <p className="mb-6 text-sm text-body">
-          Delete{" "}
-          <span className="font-bold text-on-dark">
-            {target?.firstName} {target?.lastName}
-          </span>
-          ? This cannot be undone.
-        </p>
-        <div className="flex justify-end gap-3">
-          <button
-            onClick={() => setTarget(null)}
-            className="h-10 border border-hairline px-4 text-xs font-bold uppercase tracking-[1.5px] text-body transition-colors hover:text-on-dark"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onDelete}
-            disabled={isPending}
-            className="h-10 bg-m-red px-4 text-xs font-bold uppercase tracking-[1.5px] text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-          >
-            {isPending ? "Deleting..." : "Delete"}
-          </button>
-        </div>
-      </Modal>
-    </div>
+      <DeleteUserModal
+        open={open}
+        loading={isPending}
+        user={selectedUser}
+        onClose={() => {
+          setOpen(false);
+          setSelectedUser(null);
+        }}
+        onDelete={handleDelete}
+      />
+    </>
   );
 }

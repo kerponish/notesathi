@@ -1,29 +1,50 @@
 import { handleGetAllUsers } from "@/lib/actions/admin/user-action";
-import UserTable from "./_components/UserTable";
-export default async function Page({
+
+import DashboardCards from "../_components/DashboardCard";
+import StatsCards from "./_components/StatsCard";
+import CreateUserCard from "./_components/CreateuserCard";
+import SearchBar from "./_components/SearchBar";
+import UsersTable from "./_components/UserTable";
+import Pagination from "./_components/Pagination";
+
+export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+  searchParams: {
+    page?: string;
+    limit?: string;
+    search?: string;
+  };
 }) {
-  // get the search params
-  const query = await searchParams;
-  const page = query.page ? parseInt(query.page as string, 10) : 1;
-  const limit = query.limit ? parseInt(query.limit as string, 10) : 10;
-  const search = query.search ? (query.search as string) : "";
-  // call action to get all users with the search params
-  const result = await handleGetAllUsers({ page, limit, search });
+  const page = Number(searchParams.page) || 1;
+  const limit = Number(searchParams.limit) || 10;
+  const search = searchParams.search || "";
 
-  if (!result.success) {
-    throw new Error("Failed to load users");
-  }
+  const result = await handleGetAllUsers({
+    page,
+    limit,
+    search,
+  });
 
   return (
-    <div>
-      <UserTable
-        data={result.data}
-        pagination={result.pagination}
-        search={search}
-      />
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">User Overview</h1>
+
+          <p className="text-gray-500">Manage all registered users.</p>
+        </div>
+
+        <SearchBar />
+      </div>
+
+      <StatsCards users={result.data || []} />
+
+      <CreateUserCard />
+
+      <UsersTable users={result.data || []} />
+
+      <Pagination meta={result.pagination} />
     </div>
   );
 }
