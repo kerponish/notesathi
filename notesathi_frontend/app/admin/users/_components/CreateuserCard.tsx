@@ -4,17 +4,17 @@ import { Plus } from "lucide-react";
 export default function CreateUserCard() {
   return (
     <Link href="/admin/users/create">
-      <div className="flex cursor-pointer items-center justify-between rounded-xl border bg-white p-6 shadow-sm transition hover:shadow-md">
+      <div className="group flex cursor-pointer items-center justify-between rounded-2xl border border-gray-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#246BFD]/30 hover:shadow-xl">
         <div>
-          <h2 className="text-lg font-semibold">Create Users</h2>
+          <h2 className="text-2xl font-bold text-gray-900">Create User</h2>
 
-          <p className="text-sm text-gray-500">
-            Add new users into the system.
+          <p className="mt-2 text-sm text-gray-600">
+            Add a new user to the system.
           </p>
         </div>
 
-        <div className="rounded-full bg-[#246BFD] p-3 text-white">
-          <Plus size={26} />
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#246BFD] text-white transition-all duration-300 group-hover:rotate-90 group-hover:scale-110">
+          <Plus size={32} strokeWidth={2.5} />
         </div>
       </div>
     </Link>

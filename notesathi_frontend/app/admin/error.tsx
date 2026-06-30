@@ -1,33 +1,32 @@
 "use client";
-import { useEffect } from "react";
-import StatusScreen from "./_components/StatusScreen";
 
-// This Next.js passes `unstable_retry`, not `reset`.
+import { useEffect } from "react";
+
 export default function Error({
   error,
-  unstable_retry,
+  reset,
 }: {
   error: Error & { digest?: string };
-  unstable_retry: () => void;
+  reset: () => void;
 }) {
   useEffect(() => {
     console.error(error);
   }, [error]);
 
   return (
-    <StatusScreen
-      title="Something went wrong"
-      description={
-        error.message ||
-        "An unexpected error occurred while loading this section."
-      }
-    >
+    <div className="flex min-h-[70vh] flex-col items-center justify-center text-center">
+      <h1 className="mb-2 text-4xl font-bold text-red-600">Oops!</h1>
+
+      <p className="mb-6 text-gray-600">
+        Something went wrong while loading this page.
+      </p>
+
       <button
-        onClick={() => unstable_retry()}
-        className="flex h-10 items-center bg-on-dark px-4 text-xs font-bold uppercase tracking-[1.5px] text-canvas transition-opacity hover:opacity-90"
+        onClick={reset}
+        className="rounded-lg bg-[#246BFD] px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
       >
-        Try again
+        Try Again
       </button>
-    </StatusScreen>
+    </div>
   );
 }

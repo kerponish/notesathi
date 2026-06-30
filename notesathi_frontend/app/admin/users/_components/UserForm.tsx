@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { useTransition } from "react";
+import { User, Mail, Lock, ShieldCheck, Loader2 } from "lucide-react";
 
 import { handleCreateUser } from "@/lib/actions/admin/user-action";
 
@@ -39,6 +40,9 @@ export default function UserForm() {
     });
   };
 
+  const inputClass =
+    "w-full rounded-xl border border-gray-300 px-4 py-3 pl-11 text-slate-900 font-medium placeholder:text-slate-400 placeholder:font-normal outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -50,11 +54,17 @@ export default function UserForm() {
           Full Name
         </label>
 
-        <input
-          {...register("fullname")}
-          placeholder="John Doe"
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        />
+        <div className="relative">
+          <User
+            size={18}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            {...register("fullname")}
+            placeholder="John Doe"
+            className={inputClass}
+          />
+        </div>
       </div>
 
       {/* Email */}
@@ -63,12 +73,18 @@ export default function UserForm() {
           Email Address
         </label>
 
-        <input
-          type="email"
-          {...register("email")}
-          placeholder="john@gmail.com"
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        />
+        <div className="relative">
+          <Mail
+            size={18}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            type="email"
+            {...register("email")}
+            placeholder="john@gmail.com"
+            className={inputClass}
+          />
+        </div>
       </div>
 
       {/* Password */}
@@ -77,12 +93,18 @@ export default function UserForm() {
           Password
         </label>
 
-        <input
-          type="password"
-          {...register("password")}
-          placeholder="••••••••"
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        />
+        <div className="relative">
+          <Lock
+            size={18}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <input
+            type="password"
+            {...register("password")}
+            placeholder="••••••••"
+            className={inputClass}
+          />
+        </div>
       </div>
 
       {/* Role */}
@@ -91,13 +113,19 @@ export default function UserForm() {
           Role
         </label>
 
-        <select
-          {...register("role")}
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-        >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
+        <div className="relative">
+          <ShieldCheck
+            size={18}
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+          />
+          <select
+            {...register("role")}
+            className={`${inputClass} appearance-none`}
+          >
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+          </select>
+        </div>
       </div>
 
       {/* Buttons */}
@@ -113,8 +141,9 @@ export default function UserForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
+          {isPending && <Loader2 size={16} className="animate-spin" />}
           {isPending ? "Creating..." : "Create User"}
         </button>
       </div>

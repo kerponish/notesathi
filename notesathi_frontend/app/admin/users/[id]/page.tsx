@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Mail, Shield, Calendar, ArrowLeft, Pencil } from "lucide-react";
+
 import { handleGetUserById } from "@/lib/actions/admin/user-action";
 
 interface Props {
@@ -22,105 +24,126 @@ export default async function UserDetailsPage({ params }: Props) {
 
   return (
     <div className="space-y-8">
-      {/* Heading */}
+      {/* Header */}
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">User Details</h1>
+          <h1 className="text-4xl font-extrabold text-slate-900">
+            User Profile
+          </h1>
 
-          <p className="text-slate-500 mt-1">View complete information.</p>
+          <p className="mt-2 text-gray-600">
+            View complete information about this user.
+          </p>
         </div>
 
         <Link
           href="/admin/users"
-          className="rounded-xl bg-slate-900 px-5 py-2 text-white hover:bg-slate-800"
+          className="flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
         >
+          <ArrowLeft size={18} />
           Back
         </Link>
       </div>
 
-      {/* Card */}
+      {/* Main Card */}
 
-      <div className="rounded-3xl border border-slate-200 bg-white p-10 shadow-sm">
-        <div className="flex flex-col md:flex-row gap-10">
-          {/* Avatar */}
+      <div className="overflow-hidden rounded-3xl border bg-white shadow-xl">
+        {/* Blue Header */}
 
-          <div className="flex justify-center">
-            {user.profilePicture ? (
-              <Image
-                src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.profilePicture}`}
-                alt={user.fullname
-                  ?.split(" ")
-                  .map((n: string) => n[0])
-                  .join("")
-                  .toUpperCase()}
-                width={180}
-                height={180}
-                className="rounded-full border object-cover"
-              />
-            ) : (
-              <div className="flex h-44 w-44 items-center justify-center rounded-full bg-slate-200 text-5xl font-bold text-slate-500">
-                {user.fullname?.charAt(0)}
-              </div>
-            )}
+        <div className="h-36 bg-gradient-to-r from-blue-600 to-indigo-700"></div>
+
+        {/* Avatar */}
+
+        <div className="-mt-16 flex flex-col items-center">
+          {user.profilePicture ? (
+            <Image
+              src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.profilePicture}`}
+              alt={user.fullname}
+              width={120}
+              height={120}
+              className="rounded-full border-4 border-white object-cover shadow-lg"
+            />
+          ) : (
+            <div className="flex h-32 w-32 items-center justify-center rounded-full border-4 border-white bg-blue-600 text-5xl font-bold text-white shadow-lg">
+              {user.fullname.charAt(0).toUpperCase()}
+            </div>
+          )}
+
+          <h2 className="mt-5 text-3xl font-bold text-gray-900">
+            {user.fullname}
+          </h2>
+
+          <p className="text-gray-500">{user.email}</p>
+        </div>
+
+        {/* Info */}
+
+        <div className="grid gap-6 p-10 md:grid-cols-2">
+          <div className="rounded-2xl border bg-slate-50 p-6">
+            <div className="mb-2 flex items-center gap-3">
+              <Mail className="text-blue-600" />
+              <span className="font-semibold text-gray-700">Email</span>
+            </div>
+
+            <p className="text-lg text-gray-900">{user.email}</p>
           </div>
 
-          {/* Info */}
-
-          <div className="grid flex-1 grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <p className="text-sm text-slate-500">Full Name</p>
-
-              <h2 className="text-xl font-semibold">{user.fullname}</h2>
+          <div className="rounded-2xl border bg-slate-50 p-6">
+            <div className="mb-2 flex items-center gap-3">
+              <Shield className="text-indigo-600" />
+              <span className="font-semibold text-gray-700">Role</span>
             </div>
 
-            <div>
-              <p className="text-sm text-slate-500">Email</p>
+            <span
+              className={`rounded-full px-4 py-2 text-sm font-bold ${
+                user.role === "admin"
+                  ? "bg-blue-100 text-blue-700"
+                  : "bg-gray-200 text-gray-700"
+              }`}
+            >
+              {user.role}
+            </span>
+          </div>
 
-              <h2 className="text-xl font-semibold">{user.email}</h2>
+          <div className="rounded-2xl border bg-slate-50 p-6">
+            <div className="mb-2 flex items-center gap-3">
+              <Calendar className="text-green-600" />
+              <span className="font-semibold text-gray-700">Joined Date</span>
             </div>
 
-            <div>
-              <p className="text-sm text-slate-500">Role</p>
+            <p className="text-lg text-gray-900">
+              {new Date(user.createdAt).toLocaleDateString()}
+            </p>
+          </div>
 
-              <span
-                className={`inline-block rounded-full px-4 py-1 text-sm font-semibold ${
-                  user.role === "admin"
-                    ? "bg-blue-100 text-blue-700"
-                    : "bg-gray-100 text-gray-700"
-                }`}
-              >
-                {user.role}
-              </span>
-            </div>
+          <div className="rounded-2xl border bg-slate-50 p-6">
+            <div className="mb-2 font-semibold text-gray-700">Status</div>
 
-            <div>
-              <p className="text-sm text-slate-500">Joined</p>
-
-              <h2 className="text-xl font-semibold">
-                {new Date(user.createdAt).toLocaleDateString()}
-              </h2>
-            </div>
+            <span className="rounded-full bg-green-100 px-4 py-2 font-semibold text-green-700">
+              Active
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* Buttons */}
+        {/* Buttons */}
 
-      <div className="flex gap-4">
-        <Link
-          href={`/admin/users/${user._id}/edit`}
-          className="rounded-xl bg-blue-600 px-6 py-3 text-white hover:bg-blue-700"
-        >
-          Edit User
-        </Link>
+        <div className="flex justify-end gap-4 border-t bg-gray-50 p-6">
+          <Link
+            href="/admin/users"
+            className="rounded-xl border px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-100"
+          >
+            Back
+          </Link>
 
-        <Link
-          href="/admin/users"
-          className="rounded-xl border px-6 py-3 hover:bg-gray-100"
-        >
-          Cancel
-        </Link>
+          <Link
+            href={`/admin/users/${user._id}/edit`}
+            className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+          >
+            <Pencil size={18} />
+            Edit User
+          </Link>
+        </div>
       </div>
     </div>
   );

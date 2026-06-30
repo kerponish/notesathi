@@ -1,19 +1,22 @@
 import Link from "next/link";
-import StatusScreen from "./_components/StatusScreen";
 
 export default function NotFound() {
   return (
-    <StatusScreen
-      code="404"
-      title="Page not found"
-      description="The page you’re looking for doesn’t exist or may have been moved."
-    >
+    <div className="flex min-h-[70vh] flex-col items-center justify-center text-center">
+      <h1 className="mb-2 text-6xl font-bold text-[#246BFD]">404</h1>
+
+      <h2 className="mb-3 text-3xl font-bold text-gray-800">Page Not Found</h2>
+
+      <p className="mb-8 max-w-md text-gray-500">
+        Sorry, the page you're looking for doesn't exist or has been moved.
+      </p>
+
       <Link
         href="/admin"
-        className="flex h-10 items-center bg-on-dark px-4 text-xs font-bold uppercase tracking-[1.5px] text-canvas transition-opacity hover:opacity-90"
+        className="rounded-lg bg-[#246BFD] px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
       >
-        Back to admin
+        Back to Dashboard
       </Link>
-    </StatusScreen>
+    </div>
   );
 }

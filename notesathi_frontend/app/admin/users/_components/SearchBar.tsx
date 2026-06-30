@@ -15,7 +15,7 @@ export default function SearchBar() {
 
     const query = new URLSearchParams();
 
-    if (search) {
+    if (search.trim()) {
       query.set("search", search);
     }
 
@@ -27,13 +27,29 @@ export default function SearchBar() {
   return (
     <form onSubmit={submit}>
       <div className="relative">
-        <Search size={18} className="absolute left-4 top-3 text-gray-400" />
+        <Search
+          size={20}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"
+        />
 
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search users..."
-          className="w-80 rounded-lg border bg-white py-3 pl-11 pr-4 outline-none focus:border-blue-500"
+          className="
+            w-80 rounded-xl
+            border border-gray-200
+            bg-white
+            py-3 pl-12 pr-4
+            text-[15px] font-medium text-gray-800
+            placeholder:text-gray-400
+            shadow-sm
+            transition-all duration-200
+            focus:border-[#246BFD]
+            focus:ring-4
+            focus:ring-blue-100
+            focus:outline-none
+          "
         />
       </div>
     </form>

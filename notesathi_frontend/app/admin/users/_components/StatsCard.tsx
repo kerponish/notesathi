@@ -6,9 +6,7 @@ interface Props {
 
 export default function StatsCards({ users }: Props) {
   const totalUsers = users.length;
-
   const totalAdmins = users.filter((user) => user.role === "admin").length;
-
   const totalNormalUsers = users.filter((user) => user.role === "user").length;
 
   const cards = [
@@ -16,19 +14,19 @@ export default function StatsCards({ users }: Props) {
       title: "Total Users",
       value: totalUsers,
       icon: Users,
-      color: "from-blue-500 to-blue-700",
+      color: "from-[#246BFD] to-[#1D4ED8]",
     },
     {
       title: "Admins",
       value: totalAdmins,
       icon: ShieldCheck,
-      color: "from-indigo-500 to-indigo-700",
+      color: "from-[#6D5EF9] to-[#4338CA]",
     },
     {
       title: "Users",
       value: totalNormalUsers,
       icon: UserCheck,
-      color: "from-cyan-500 to-cyan-700",
+      color: "from-[#06B6D4] to-[#0891B2]",
     },
   ];
 
@@ -40,17 +38,21 @@ export default function StatsCards({ users }: Props) {
         return (
           <div
             key={card.title}
-            className={`rounded-2xl bg-gradient-to-r ${card.color} p-6 text-white shadow-lg transition hover:scale-[1.02]`}
+            className={`group rounded-2xl bg-gradient-to-r ${card.color} p-7 text-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl`}
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm opacity-80">{card.title}</p>
+                <p className="text-sm font-medium text-white/90">
+                  {card.title}
+                </p>
 
-                <h2 className="mt-2 text-4xl font-bold">{card.value}</h2>
+                <h2 className="mt-3 text-5xl font-extrabold tracking-tight">
+                  {card.value}
+                </h2>
               </div>
 
-              <div className="rounded-full bg-white/20 p-4">
-                <Icon size={32} />
+              <div className="rounded-2xl bg-white/15 p-5 backdrop-blur-sm transition group-hover:bg-white/20">
+                <Icon className="h-9 w-9 text-white" />
               </div>
             </div>
           </div>

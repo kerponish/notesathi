@@ -2,9 +2,9 @@
 
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import Image from "next/image";
 import { toast } from "react-toastify";
+import { useTransition } from "react";
+import { User, Mail, ShieldCheck, Loader2, X } from "lucide-react";
 
 import { handleUpdateUser } from "@/lib/actions/admin/user-action";
 
@@ -12,25 +12,16 @@ interface Props {
   user: any;
 }
 
-interface FormData {
-  fullname: string;
-  email: string;
-  role: string;
-  profilePicture?: FileList;
-}
-
 export default function UserFormEdit({ user }: Props) {
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
 
-  const [preview, setPreview] = useState<string | null>(
-    user.profilePicture
-      ? `${process.env.NEXT_PUBLIC_API_BASE_URL}/${user.profilePicture}`
-      : null,
-  );
-
-  const { register, handleSubmit } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       fullname: user.fullname,
       email: user.email,
@@ -38,22 +29,13 @@ export default function UserFormEdit({ user }: Props) {
     },
   });
 
-  const onSubmit = (data: FormData) => {
-    const formData = new FormData();
-
-    formData.append("fullname", data.fullname);
-    formData.append("email", data.email);
-    formData.append("role", data.role);
-
-    if (data.profilePicture?.[0]) {
-      formData.append("profilePicture", data.profilePicture[0]);
-    }
-
+  const onSubmit = (data: any) => {
     startTransition(async () => {
-      const result = await handleUpdateUser(user._id, formData);
+      const result = await handleUpdateUser(user._id, data);
 
       if (result.success) {
         toast.success("User updated successfully");
+
         router.push("/admin/users");
         router.refresh();
       } else {
@@ -63,106 +45,122 @@ export default function UserFormEdit({ user }: Props) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-1 gap-6 md:grid-cols-2"
-    >
-      {/* Avatar */}
+    <div className="mx-auto w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+      {/* Header */}
+      <div className="mb-8 flex items-center gap-4 border-b border-slate-100 pb-6">
+        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-xl font-semibold text-[#246BFD]">
+          {user.fullname?.charAt(0)?.toUpperCase() ?? "U"}
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-slate-800">Edit User</h2>
+          <p className="text-sm text-slate-500">
+            Update details for {user.fullname}
+          </p>
+        </div>
+      </div>
 
-      <div className="md:col-span-2 flex justify-center">
-        {preview ? (
-          <Image
-            src={preview}
-            alt="Profile"
-            width={140}
-            height={140}
-            className="rounded-full border object-cover"
-          />
-        ) : (
-          <div className="flex h-36 w-36 items-center justify-center rounded-full bg-slate-200 text-5xl font-bold text-slate-600">
-            {user.fullname.charAt(0)}
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Full Name */}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-700">
+            Full Name
+          </label>
+
+          <div className="relative">
+            <User
+              size={18}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <input
+              {...register("fullname", {
+                required: "Full name is required",
+              })}
+              className={`w-full rounded-xl border px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-4 focus:ring-blue-50 ${
+                errors.fullname ? "border-red-300" : "border-slate-300"
+              }`}
+              placeholder="John Doe"
+            />
           </div>
-        )}
-      </div>
 
-      {/* Upload */}
+          {errors.fullname && (
+            <p className="mt-1.5 text-sm text-red-500">
+              {errors.fullname.message as string}
+            </p>
+          )}
+        </div>
 
-      <div className="md:col-span-2">
-        <label className="mb-2 block text-sm font-semibold">
-          Profile Picture
-        </label>
+        {/* Email */}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-700">
+            Email Address
+          </label>
 
-        <input
-          type="file"
-          accept="image/*"
-          {...register("profilePicture")}
-          onChange={(e) => {
-            const file = e.target.files?.[0];
+          <div className="relative">
+            <Mail
+              size={18}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <input
+              type="email"
+              {...register("email", {
+                required: "Email is required",
+              })}
+              className={`w-full rounded-xl border px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-4 focus:ring-blue-50 ${
+                errors.email ? "border-red-300" : "border-slate-300"
+              }`}
+              placeholder="john@example.com"
+            />
+          </div>
 
-            if (file) {
-              setPreview(URL.createObjectURL(file));
-            }
-          }}
-          className="block w-full rounded-xl border p-3"
-        />
-      </div>
+          {errors.email && (
+            <p className="mt-1.5 text-sm text-red-500">
+              {errors.email.message as string}
+            </p>
+          )}
+        </div>
 
-      {/* Full Name */}
+        {/* Role */}
+        <div>
+          <label className="mb-2 block text-sm font-semibold text-slate-700">
+            Role
+          </label>
 
-      <div className="md:col-span-2">
-        <label className="mb-2 block text-sm font-semibold">Full Name</label>
+          <div className="relative">
+            <ShieldCheck
+              size={18}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <select
+              {...register("role")}
+              className="w-full appearance-none rounded-xl border border-slate-300 px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-4 focus:ring-blue-50"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
 
-        <input
-          {...register("fullname")}
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-        />
-      </div>
+        {/* Buttons */}
+        <div className="flex justify-end gap-3 pt-4">
+          <button
+            type="button"
+            onClick={() => router.push("/admin/users")}
+            className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
+          >
+            <X size={16} />
+            Cancel
+          </button>
 
-      {/* Email */}
-
-      <div className="md:col-span-2">
-        <label className="mb-2 block text-sm font-semibold">Email</label>
-
-        <input
-          type="email"
-          {...register("email")}
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-        />
-      </div>
-
-      {/* Role */}
-
-      <div className="md:col-span-2">
-        <label className="mb-2 block text-sm font-semibold">Role</label>
-
-        <select
-          {...register("role")}
-          className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
-        >
-          <option value="user">User</option>
-          <option value="admin">Admin</option>
-        </select>
-      </div>
-
-      {/* Buttons */}
-
-      <div className="md:col-span-2 mt-4 flex justify-end gap-4">
-        <button
-          type="button"
-          onClick={() => router.push("/admin/users")}
-          className="rounded-xl border border-gray-300 px-6 py-3 hover:bg-gray-100"
-        >
-          Cancel
-        </button>
-
-        <button
-          type="submit"
-          disabled={isPending}
-          className="rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white hover:bg-blue-700"
-        >
-          {isPending ? "Updating..." : "Update User"}
-        </button>
-      </div>
-    </form>
+          <button
+            type="submit"
+            disabled={isPending}
+            className="flex items-center gap-2 rounded-xl bg-[#246BFD] px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {isPending && <Loader2 size={16} className="animate-spin" />}
+            {isPending ? "Updating..." : "Update User"}
+          </button>
+        </div>
+      </form>
+    </div>
   );
 }
