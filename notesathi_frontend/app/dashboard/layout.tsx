@@ -1,15 +1,16 @@
-import DashboardHeader from "./_components/DashboardHeader";
+import Sidebar from "./_components/Sidebar";
+import Topbar from "./_components/Topbar";
+import Footer from "@/app/_components/footer";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <section className="p-4 sm:p-6 lg:p-8 bg-light min-h-screen text-on-dark flex flex-col gap-8  mx-auto w-full max-w-[1440px]">
-      <DashboardHeader />
-
-      <main className="flex-1">{children}</main>
-      {/* Footer */}
-      <footer className="text-center text-sm text-muted">
-        &copy; {new Date().getFullYear()} My App. All rights reserved.
-      </footer>
-    </section>
+    <div className="flex min-h-screen bg-slate-50">
+      <Sidebar />
+      <div className="flex flex-1 flex-col">
+        <Topbar />
+        <main className="flex-1 p-6 lg:p-8">{children}</main>
+        <Footer compact />
+      </div>
+    </div>
   );
 }

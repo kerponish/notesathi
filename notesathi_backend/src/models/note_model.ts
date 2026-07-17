@@ -6,15 +6,16 @@ export interface INote extends Document {
   title: string;
   description: string;
   thumbnail?: string;
+  contentFile?: string;
+  contentFileType?: "image" | "pdf";
   category: string;
 
   subjectId: mongoose.Types.ObjectId;
-  classLevel: {
-    type: String;
-    enum: ["1", "2", "3", "4", "5", "6", "7", "8"];
-    required: true;
-  };
+  classLevel: string;
   createdBy: mongoose.Types.ObjectId;
+
+  likes: mongoose.Types.ObjectId[];
+  commentsCount: number;
 
   createdAt: Date;
   updatedAt: Date;
@@ -38,6 +39,16 @@ const NoteModelSchema = new Schema<INote>(
       default: "",
     },
 
+    contentFile: {
+      type: String,
+      default: "",
+    },
+
+    contentFileType: {
+      type: String,
+      enum: ["image", "pdf"],
+    },
+
     category: {
       type: String,
       required: true,
@@ -49,10 +60,27 @@ const NoteModelSchema = new Schema<INote>(
       required: true,
     },
 
+    classLevel: {
+      type: String,
+      enum: ["1", "2", "3", "4", "5", "6", "7", "8"],
+      required: true,
+    },
+
     createdBy: {
       type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+
+    likes: {
+      type: [Schema.Types.ObjectId],
+      ref: "User",
+      default: [],
+    },
+
+    commentsCount: {
+      type: Number,
+      default: 0,
     },
   },
   {

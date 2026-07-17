@@ -1,6 +1,6 @@
 import axios from "axios";
 import { getTokenCookie } from "../cookies";
-const BASE_URL =
+export const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8088";
 
 const axiosInstance = axios.create({

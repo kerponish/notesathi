@@ -4,6 +4,15 @@ import { NoteMongoRepository } from "../repositories/note_repository";
 
 const noteRepository = new NoteMongoRepository();
 
+// createdBy comes back populated ({_id, fullname, email}) from findById,
+// so a plain .toString() never matches the raw userId string.
+function ownerId(createdBy: any): string {
+  if (createdBy && typeof createdBy === "object" && createdBy._id) {
+    return createdBy._id.toString();
+  }
+  return createdBy?.toString();
+}
+
 export class NoteService {
   async createNote(noteData: CreateNoteDto, userId: string) {
     return await noteRepository.create({
@@ -37,11 +46,21 @@ export class NoteService {
       throw new HttpException(404, "Note not found");
     }
 
-    if (note.createdBy.toString() !== userId) {
+    if (ownerId(note.createdBy) !== userId) {
       throw new HttpException(403, "You can only update your own notes");
     }
 
     return await noteRepository.update(noteId, noteData as any);
+  }
+
+  async toggleLike(noteId: string, userId: string) {
+    const note = await noteRepository.findById(noteId);
+
+    if (!note) {
+      throw new HttpException(404, "Note not found");
+    }
+
+    return await noteRepository.toggleLike(noteId, userId);
   }
 
   async deleteNote(noteId: string, userId: string) {
@@ -51,7 +70,7 @@ export class NoteService {
       throw new HttpException(404, "Note not found");
     }
 
-    if (note.createdBy.toString() !== userId) {
+    if (ownerId(note.createdBy) !== userId) {
       throw new HttpException(403, "You can only delete your own notes");
     }
 

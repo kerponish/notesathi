@@ -8,6 +8,7 @@ export interface INoteRepository {
   search(keyword: string): Promise<INote[]>;
   update(id: string, note: Partial<INote>): Promise<INote | null>;
   delete(id: string): Promise<boolean>;
+  toggleLike(id: string, userId: string): Promise<INote | null>;
 }
 
 export class NoteMongoRepository implements INoteRepository {
@@ -61,5 +62,23 @@ export class NoteMongoRepository implements INoteRepository {
     const deletedNote = await Note.findByIdAndDelete(id);
 
     return !!deletedNote;
+  }
+
+  async toggleLike(id: string, userId: string): Promise<INote | null> {
+    const note = await Note.findById(id);
+
+    if (!note) {
+      return null;
+    }
+
+    const alreadyLiked = note.likes.some((likeId) => likeId.toString() === userId);
+
+    if (alreadyLiked) {
+      await Note.findByIdAndUpdate(id, { $pull: { likes: userId } });
+    } else {
+      await Note.findByIdAndUpdate(id, { $addToSet: { likes: userId } });
+    }
+
+    return await this.findById(id);
   }
 }

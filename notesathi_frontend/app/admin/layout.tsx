@@ -1,5 +1,5 @@
 import Navbar from "./_components/Navbar";
-import Footer from "./_components/Footer";
+import Footer from "@/app/_components/footer";
 
 export default function AdminLayout({
   children,
@@ -12,7 +12,7 @@ export default function AdminLayout({
 
       <section className="mx-auto mt-6 w-[95%]">{children}</section>
 
-      <Footer />
+      <Footer compact />
     </main>
   );
 }

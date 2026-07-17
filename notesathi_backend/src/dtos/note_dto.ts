@@ -5,8 +5,11 @@ export const CreateNoteDto = NoteSchema.pick({
   title: true,
   description: true,
   thumbnail: true,
+  contentFile: true,
+  contentFileType: true,
   category: true,
   subjectId: true,
+  classLevel: true,
 });
 
 export type CreateNoteDto = z.infer<typeof CreateNoteDto>;

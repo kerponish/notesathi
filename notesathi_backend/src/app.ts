@@ -5,10 +5,12 @@ import cors from "cors";
 import userRoutes from "./routes/user_route";
 import path from "path";
 import adminUserRoutes from "./routes/admin/user_routes";
+import noteRoutes from "./routes/note_route";
+import subjectRoutes from "./routes/subject_route";
 
 const app: Application = express();
 let corsOptions = {
-  origin: ["*"], // {"http://localhost:300", "http://example.com"}
+  origin: "*",
   optionsSuccessStatus: 200,
 };
 
@@ -21,6 +23,10 @@ app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use("/api/admin/users", adminUserRoutes);
 
 app.use("/api/users", userRoutes);
+
+app.use("/api/note", noteRoutes);
+
+app.use("/api/subjects", subjectRoutes);
 
 app.use((req: Request, res: Response) => {
   return res.status(404).json({ message: "Route Not Found" });

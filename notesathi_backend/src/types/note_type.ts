@@ -4,6 +4,8 @@ export const NoteSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
   thumbnail: z.string().optional(),
+  contentFile: z.string().optional(),
+  contentFileType: z.enum(["image", "pdf"]).optional(),
   category: z.string().min(1),
 
   subjectId: z.string(),

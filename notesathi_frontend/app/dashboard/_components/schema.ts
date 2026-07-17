@@ -15,9 +15,6 @@ export const updateProfileSchema = z.object({
     .string("Must be a valid string")
     .min(2, { message: "Minimum 2 characters" }),
   email: z.email({ message: "Invalid email address" }),
-  username: z
-    .string("Must be a valid string")
-    .min(3, { message: "Minimum 3 characters" }),
   image: z
     .instanceof(File)
     .optional()

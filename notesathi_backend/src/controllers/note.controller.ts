@@ -7,9 +7,37 @@ export class NoteController {
   async createNote(req: Request, res: Response) {
     const userId = (req as any).user.id;
 
-    const note = await noteService.createNote(req.body, userId);
+    const files = req.files as
+      | { [fieldname: string]: Express.Multer.File[] }
+      | undefined;
+    const thumbnailFile = files?.thumbnail?.[0];
+    const contentFile = files?.contentFile?.[0];
+
+    const noteData = { ...req.body };
+    if (thumbnailFile) {
+      noteData.thumbnail = `/uploads/${thumbnailFile.filename}`;
+    }
+    if (contentFile) {
+      noteData.contentFile = `/uploads/${contentFile.filename}`;
+      noteData.contentFileType = contentFile.mimetype.startsWith("image/")
+        ? "image"
+        : "pdf";
+    }
+
+    const note = await noteService.createNote(noteData, userId);
 
     res.status(201).json({
+      success: true,
+      data: note,
+    });
+  }
+
+  async toggleLike(req: Request, res: Response) {
+    const userId = (req as any).user.id;
+
+    const note = await noteService.toggleLike(req.params.id as string, userId);
+
+    res.status(200).json({
       success: true,
       data: note,
     });
