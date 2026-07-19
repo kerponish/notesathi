@@ -9,7 +9,9 @@ import { IUser } from "../models/user_model";
 import { HttpException } from "../exceptions/http-exception";
 import bycryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../config/constant";
+import crypto from "crypto";
+import { SECRET_KEY, FRONTEND_URL } from "../config/constant";
+import { sendPasswordResetEmail } from "../utils/mailer";
 
 const userRepository = new UserMongoRepository();
 
@@ -150,5 +152,38 @@ export class UserService {
       throw new HttpException(500, "Failed to update password");
     }
     return updatedUser;
+  }
+
+  async forgotPassword(email: string): Promise<void> {
+    const user = await userRepository.getUserByEmail(email);
+    // Always resolve silently even if the email isn't registered, so this
+    // endpoint can't be used to enumerate which emails have accounts.
+    if (!user) {
+      return;
+    }
+
+    const rawToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+
+    await userRepository.setResetToken(user._id.toString(), hashedToken, expires);
+
+    const resetUrl = `${FRONTEND_URL}/reset-password?token=${rawToken}`;
+    await sendPasswordResetEmail(user.email, resetUrl);
+  }
+
+  async resetPassword(rawToken: string, newPassword: string): Promise<void> {
+    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
+    const user = await userRepository.getUserByResetToken(hashedToken);
+
+    if (!user) {
+      throw new HttpException(400, "Reset link is invalid or has expired");
+    }
+
+    const hashedPassword = await bycryptjs.hash(newPassword, 10);
+    await userRepository.update(user._id.toString(), {
+      password: hashedPassword,
+    });
+    await userRepository.clearResetToken(user._id.toString());
   }
 }

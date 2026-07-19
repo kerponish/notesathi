@@ -6,6 +6,8 @@ import {
   LoginUserDTO,
   UpdateUserDTO,
   UpdatePasswordDTO,
+  ForgotPasswordDTO,
+  ResetPasswordDTO,
 } from "../dtos/user_dto";
 import { ApiResponseHelper } from "../utils/api-response";
 import { Request, Response } from "express";
@@ -150,6 +152,57 @@ export class UserController {
       return ApiResponseHelper.error(
         res,
         e?.message || "Failed to fetch user details",
+        e.status || 500,
+      );
+    }
+  }
+
+  async forgotPassword(req: Request, res: Response) {
+    try {
+      const parseResult = ForgotPasswordDTO.safeParse(req.body);
+      if (!parseResult.success) {
+        throw new HttpException(400, z.prettifyError(parseResult.error));
+      }
+
+      await userService.forgotPassword(parseResult.data.email);
+
+      return ApiResponseHelper.success(
+        res,
+        null,
+        "If that email is registered, a reset link has been sent.",
+        200,
+      );
+    } catch (e: Error | unknown | any) {
+      return ApiResponseHelper.error(
+        res,
+        e?.message || "Failed to process request",
+        e.status || 500,
+      );
+    }
+  }
+
+  async resetPassword(req: Request, res: Response) {
+    try {
+      const parseResult = ResetPasswordDTO.safeParse(req.body);
+      if (!parseResult.success) {
+        throw new HttpException(400, z.prettifyError(parseResult.error));
+      }
+
+      await userService.resetPassword(
+        parseResult.data.token,
+        parseResult.data.newPassword,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        null,
+        "Password reset successfully",
+        200,
+      );
+    } catch (e: Error | unknown | any) {
+      return ApiResponseHelper.error(
+        res,
+        e?.message || "Failed to reset password",
         e.status || 500,
       );
     }

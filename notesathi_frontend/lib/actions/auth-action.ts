@@ -6,6 +6,8 @@ import {
   updateProfile,
   updatePassword,
   updateSettings,
+  forgotPassword,
+  resetPassword,
 } from "@/lib/api/auth";
 import {
   LoginFormData,
@@ -148,6 +150,40 @@ export const handleUpdateSettings = async (data: {
     return {
       success: false,
       message: error?.message || "Failed to update settings",
+    };
+  }
+};
+
+export const handleForgotPassword = async (email: string) => {
+  try {
+    const result = await forgotPassword(email);
+    return {
+      success: !!result.success,
+      message: result.message || "If that email is registered, a reset link has been sent.",
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message || "Failed to send reset email",
+    };
+  }
+};
+
+export const handleResetPassword = async (data: {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}) => {
+  try {
+    const result = await resetPassword(data);
+    return {
+      success: !!result.success,
+      message: result.message || "Password reset successfully",
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message || "Failed to reset password",
     };
   }
 };

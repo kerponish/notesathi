@@ -54,3 +54,20 @@ export const UpdatePasswordDTO = z
     path: ["confirmPassword"],
   });
 export type UpdatePasswordDTO = z.infer<typeof UpdatePasswordDTO>;
+
+export const ForgotPasswordDTO = UserSchema.pick({ email: true });
+export type ForgotPasswordDTO = z.infer<typeof ForgotPasswordDTO>;
+
+export const ResetPasswordDTO = z
+  .object({
+    token: z.string().min(1, "Reset token is required"),
+    newPassword: z.string().min(6, "New password must be at least 6 characters long"),
+    confirmPassword: z
+      .string()
+      .min(6, "Confirm password must be at least 6 characters long"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "New password and confirm password must match",
+    path: ["confirmPassword"],
+  });
+export type ResetPasswordDTO = z.infer<typeof ResetPasswordDTO>;

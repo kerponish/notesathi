@@ -66,6 +66,34 @@ export const updatePassword = async (data: UpdatePasswordFormData) => {
   }
 };
 
+export const forgotPassword = async (email: string) => {
+  try {
+    const response = await axiosInstance.post(API.AUTH.FORGOT_PASSWORD, {
+      email,
+    });
+    return response.data;
+  } catch (error: Error | any) {
+    throw new Error(
+      error?.response?.data?.message || "Failed to send reset email",
+    );
+  }
+};
+
+export const resetPassword = async (data: {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}) => {
+  try {
+    const response = await axiosInstance.post(API.AUTH.RESET_PASSWORD, data);
+    return response.data;
+  } catch (error: Error | any) {
+    throw new Error(
+      error?.response?.data?.message || "Failed to reset password",
+    );
+  }
+};
+
 export const updateSettings = async (data: {
   notificationsEnabled?: boolean;
   language?: "en" | "ne";

@@ -5,6 +5,8 @@ export const API = {
     WHOAMI: "/api/users/whoami",
     PROFILE: "/api/users/update",
     UPDATE_PASSWORD: "/api/users/change-password",
+    FORGOT_PASSWORD: "/api/users/forgot-password",
+    RESET_PASSWORD: "/api/users/reset-password",
   },
   NOTE: {
     GET_ALL: "/api/note",

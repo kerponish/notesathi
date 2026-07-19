@@ -2,6 +2,9 @@ import { UserModel, IUser } from "../models/user_model";
 
 export interface IUserRepository {
   getUserByEmail(email: string): Promise<IUser | null>;
+  getUserByResetToken(hashedToken: string): Promise<IUser | null>;
+  setResetToken(id: string, hashedToken: string, expires: Date): Promise<void>;
+  clearResetToken(id: string): Promise<void>;
 
   // 5 common mandatory methods for a repository
   createUser(user: Partial<IUser>): Promise<IUser>;
@@ -23,6 +26,31 @@ export class UserMongoRepository implements IUserRepository {
   async getUserByEmail(email: string): Promise<IUser | null> {
     const found = await UserModel.findOne({ email });
     return found;
+  }
+
+  async getUserByResetToken(hashedToken: string): Promise<IUser | null> {
+    const found = await UserModel.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: new Date() },
+    }).select("+resetPasswordToken +resetPasswordExpires");
+    return found;
+  }
+
+  async setResetToken(
+    id: string,
+    hashedToken: string,
+    expires: Date,
+  ): Promise<void> {
+    await UserModel.findByIdAndUpdate(id, {
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: expires,
+    });
+  }
+
+  async clearResetToken(id: string): Promise<void> {
+    await UserModel.findByIdAndUpdate(id, {
+      $unset: { resetPasswordToken: "", resetPasswordExpires: "" },
+    });
   }
 
   async createUser(user: Partial<IUser>): Promise<IUser> {

@@ -10,6 +10,9 @@ router.post("/register", userController.createUser);
 router.post("/login", userController.loginUser);
 router.get("/whoami", authorizedMiddleware, userController.whoAmI);
 
+router.post("/forgot-password", userController.forgotPassword);
+router.post("/reset-password", userController.resetPassword);
+
 router.patch(
   "/change-password",
   authorizedMiddleware,
