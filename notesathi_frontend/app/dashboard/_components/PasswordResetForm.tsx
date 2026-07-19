@@ -3,9 +3,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { UpdatePasswordFormData, updatePasswordSchema } from "./schema";
-import { Slide, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { handleUpdatePassword } from "@/lib/actions/auth-action";
+
 export default function UpdatePasswordForm() {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
@@ -13,7 +14,7 @@ export default function UpdatePasswordForm() {
   const {
     register,
     handleSubmit,
-    control,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<UpdatePasswordFormData>({
     resolver: zodResolver(updatePasswordSchema),
@@ -33,6 +34,8 @@ export default function UpdatePasswordForm() {
           throw new Error(result.message || "Failed to update password");
         }
         toast.success("Password updated successfully");
+        reset();
+        router.push("/dashboard/settings");
       } catch (error: any) {
         toast.error(error?.message);
         setError(error?.message || "Failed to update password");
@@ -41,19 +44,21 @@ export default function UpdatePasswordForm() {
   };
 
   const fieldClass =
-    "h-12 w-full border border-hairline bg-surface-card px-4 text-on-dark placeholder:text-muted outline-none transition-colors focus:border-on-dark";
+    "h-11 w-full rounded-lg border border-slate-200 bg-white px-4 text-sm text-slate-900 outline-none transition-colors placeholder:text-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100";
   const labelClass =
-    "mb-2 block text-xs font-bold uppercase tracking-[1.5px] text-body";
-  const errClass = "mt-1 block text-sm text-m-red";
+    "mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-500";
+  const errClass = "mt-1 block text-xs text-red-500";
 
   return (
-    <div className="w-full max-w-md">
-      <h1 className="mb-8 text-4xl font-bold uppercase leading-none text-on-dark">
-        Update Password
-      </h1>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <div className="w-full max-w-md rounded-2xl border border-slate-100 bg-white p-6">
+      <h1 className="text-lg font-bold text-slate-900">Change Password</h1>
+      <p className="mt-1 text-sm text-slate-500">
+        Choose a strong password you don&apos;t use elsewhere.
+      </p>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="mt-6">
         {error && (
-          <div className="mb-6 border border-m-red bg-m-red/10 px-4 py-3 text-sm text-m-red">
+          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
             {error}
           </div>
         )}
@@ -70,41 +75,39 @@ export default function UpdatePasswordForm() {
             <span className={errClass}>{errors.currentPassword.message}</span>
           )}
         </div>
-        <div className="mb-5 ">
-          <div>
-            <label className={labelClass}>New Password</label>
-            <input
-              type="password"
-              {...register("newPassword")}
-              placeholder="••••••••"
-              className={fieldClass}
-            />
-            {errors.newPassword && (
-              <span className={errClass}>{errors.newPassword.message}</span>
-            )}
-          </div>
-        </div>
 
         <div className="mb-5">
-          <div>
-            <label className={labelClass}>Confirm New Password</label>
-            <input
-              type="password"
-              {...register("confirmPassword")}
-              placeholder="••••••••"
-              className={fieldClass}
-            />
-            {errors.confirmPassword && (
-              <span className={errClass}>{errors.confirmPassword.message}</span>
-            )}
-          </div>
+          <label className={labelClass}>New Password</label>
+          <input
+            type="password"
+            {...register("newPassword")}
+            placeholder="••••••••"
+            className={fieldClass}
+          />
+          {errors.newPassword && (
+            <span className={errClass}>{errors.newPassword.message}</span>
+          )}
         </div>
+
+        <div className="mb-6">
+          <label className={labelClass}>Confirm New Password</label>
+          <input
+            type="password"
+            {...register("confirmPassword")}
+            placeholder="••••••••"
+            className={fieldClass}
+          />
+          {errors.confirmPassword && (
+            <span className={errClass}>{errors.confirmPassword.message}</span>
+          )}
+        </div>
+
         <button
           type="submit"
           disabled={isSubmitting || isPending}
-          className="flex h-12 w-full items-center justify-center bg-on-dark text-xs font-bold uppercase tracking-[1.5px] text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
+          className="flex h-11 w-full items-center justify-center rounded-lg bg-violet-600 text-sm font-semibold text-white transition-colors hover:bg-violet-700 disabled:opacity-50"
         >
-          {isPending ? "Updating password..." : "Update password"}
+          {isPending ? "Updating..." : "Update Password"}
         </button>
       </form>
     </div>

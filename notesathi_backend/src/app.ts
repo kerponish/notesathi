@@ -7,6 +7,7 @@ import path from "path";
 import adminUserRoutes from "./routes/admin/user_routes";
 import noteRoutes from "./routes/note_route";
 import subjectRoutes from "./routes/subject_route";
+import notificationRoutes from "./routes/notification_route";
 
 const app: Application = express();
 let corsOptions = {
@@ -27,6 +28,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/note", noteRoutes);
 
 app.use("/api/subjects", subjectRoutes);
+
+app.use("/api/notifications", notificationRoutes);
 
 app.use((req: Request, res: Response) => {
   return res.status(404).json({ message: "Route Not Found" });

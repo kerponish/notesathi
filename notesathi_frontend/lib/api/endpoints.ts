@@ -4,7 +4,7 @@ export const API = {
     LOGIN: "/api/users/login",
     WHOAMI: "/api/users/whoami",
     PROFILE: "/api/users/update",
-    UPDATE_PASSWORD: "/api/users/update-password",
+    UPDATE_PASSWORD: "/api/users/change-password",
   },
   NOTE: {
     GET_ALL: "/api/note",
@@ -13,9 +13,15 @@ export const API = {
     GET_BY_ID: (id: string) => `/api/note/${id}`,
     LIKE: (id: string) => `/api/note/${id}/like`,
     COMMENTS: (id: string) => `/api/note/${id}/comments`,
+    QUIZ: (id: string) => `/api/note/${id}/quiz`,
   },
   SUBJECT: {
     GET_ALL: "/api/subjects",
+  },
+  NOTIFICATION: {
+    GET_ALL: "/api/notifications",
+    MARK_READ: (id: string) => `/api/notifications/${id}/read`,
+    MARK_ALL_READ: "/api/notifications/read-all",
   },
   ADMIN: {
     USERS: {

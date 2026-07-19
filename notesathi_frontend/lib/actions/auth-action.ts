@@ -5,6 +5,7 @@ import {
   whoami,
   updateProfile,
   updatePassword,
+  updateSettings,
 } from "@/lib/api/auth";
 import {
   LoginFormData,
@@ -119,6 +120,34 @@ export const handleUpdatePassword = async (data: UpdatePasswordFormData) => {
     return {
       success: false,
       message: error?.message || "Failed to update password",
+    };
+  }
+};
+
+export const handleUpdateSettings = async (data: {
+  notificationsEnabled?: boolean;
+  language?: "en" | "ne";
+}) => {
+  try {
+    const result = await updateSettings(data);
+    if (!result.success) {
+      return {
+        success: false,
+        message: result.message || "Failed to update settings",
+      };
+    }
+
+    if (result.data) {
+      await storeUserData(result.data);
+    }
+
+    revalidatePath("/dashboard/settings");
+
+    return { success: true, message: result.message, data: result.data };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: error?.message || "Failed to update settings",
     };
   }
 };

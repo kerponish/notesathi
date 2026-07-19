@@ -1,8 +1,10 @@
 import { CreateNoteDto, UpdateNoteDto } from "../dtos/note_dto";
 import { HttpException } from "../exceptions/http-exception";
 import { NoteMongoRepository } from "../repositories/note_repository";
+import { NotificationService } from "./notification_service";
 
 const noteRepository = new NoteMongoRepository();
+const notificationService = new NotificationService();
 
 // createdBy comes back populated ({_id, fullname, email}) from findById,
 // so a plain .toString() never matches the raw userId string.
@@ -60,7 +62,19 @@ export class NoteService {
       throw new HttpException(404, "Note not found");
     }
 
-    return await noteRepository.toggleLike(noteId, userId);
+    const alreadyLiked = note.likes.some((likeId) => likeId.toString() === userId);
+    const updated = await noteRepository.toggleLike(noteId, userId);
+
+    if (!alreadyLiked) {
+      await notificationService.notify({
+        userId: ownerId(note.createdBy),
+        fromUserId: userId,
+        type: "like",
+        noteId,
+      });
+    }
+
+    return updated;
   }
 
   async deleteNote(noteId: string, userId: string) {

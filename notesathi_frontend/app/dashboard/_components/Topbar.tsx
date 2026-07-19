@@ -3,11 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Bell, LogOut, Search } from "lucide-react";
+import { LogOut, Search } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/lib/context/AuthContext";
+import NotificationBell from "./NotificationBell";
 
-export default function Topbar() {
+export default function Topbar({
+  initialUnreadCount = 0,
+}: {
+  initialUnreadCount?: number;
+}) {
   const { user, logout } = useAuth();
   const router = useRouter();
   const [query, setQuery] = useState("");
@@ -61,13 +66,7 @@ export default function Topbar() {
         >
           Upload
         </Link>
-        <button
-          aria-label="Notifications"
-          onClick={() => toast.info("You're all caught up — no new notifications.")}
-          className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
-        >
-          <Bell className="h-4 w-4" />
-        </button>
+        <NotificationBell initialUnreadCount={initialUnreadCount} />
         <Link
           href="/dashboard/profile"
           aria-label="Profile"

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { CommentController } from "../controllers/comment.controller";
 import { NoteController } from "../controllers/note.controller";
+import { QuizController } from "../controllers/quiz.controller";
 import { authorizedMiddleware } from "../middleware/authorized.middleware";
 import { upload } from "../middleware/upload.middleware";
 
@@ -8,6 +9,7 @@ const router = Router();
 
 const noteController = new NoteController();
 const commentController = new CommentController();
+const quizController = new QuizController();
 
 router.post(
   "/create",
@@ -38,5 +40,7 @@ router.post(
 );
 
 router.get("/:id/comments", commentController.getComments);
+
+router.get("/:id/quiz", authorizedMiddleware, quizController.generateQuiz);
 
 export default router;

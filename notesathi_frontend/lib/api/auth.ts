@@ -56,12 +56,27 @@ export const updateProfile = async (data: FormData) => {
 
 export const updatePassword = async (data: UpdatePasswordFormData) => {
   try {
-    const response = await axiosInstance.put(API.AUTH.UPDATE_PASSWORD, data);
+    const response = await axiosInstance.patch(API.AUTH.UPDATE_PASSWORD, data);
 
     return response.data;
   } catch (error: Error | any) {
     throw new Error(
       error?.response?.data?.message || "Failed to update password",
+    );
+  }
+};
+
+export const updateSettings = async (data: {
+  notificationsEnabled?: boolean;
+  language?: "en" | "ne";
+}) => {
+  try {
+    const response = await axiosInstance.patch(API.AUTH.PROFILE, data);
+
+    return response.data;
+  } catch (error: Error | any) {
+    throw new Error(
+      error?.response?.data?.message || "Failed to update settings",
     );
   }
 };

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Download, FileText } from "lucide-react";
+import { ArrowLeft, Download, FileText, Sparkles } from "lucide-react";
 import { getUserData } from "@/lib/cookies";
 import { getNoteById } from "@/lib/api/notes";
 import { getComments } from "@/lib/api/comments";
@@ -116,6 +116,22 @@ export default async function NoteDetailPage({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="flex items-center justify-between rounded-2xl bg-violet-600 p-6 text-white">
+        <div>
+          <h2 className="text-base font-bold">Test what you've learned</h2>
+          <p className="mt-1 text-sm text-violet-100">
+            Take a 10-question quiz generated from this note.
+          </p>
+        </div>
+        <Link
+          href={`/dashboard/notes/${note._id}/quiz`}
+          className="flex h-10 shrink-0 items-center gap-2 rounded-lg bg-white px-4 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-50"
+        >
+          <Sparkles className="h-4 w-4" />
+          Take Quiz
+        </Link>
       </div>
 
       <CommentSection

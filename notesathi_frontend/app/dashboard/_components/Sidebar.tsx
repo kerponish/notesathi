@@ -8,7 +8,7 @@ import Logo from "@/app/_components/logo";
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid },
   { href: "/dashboard/notes", label: "My Notes", icon: FileText },
-  { href: "/dashboard/profile", label: "Settings", icon: Settings },
+  { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Sidebar() {
@@ -26,7 +26,10 @@ export default function Sidebar() {
           const active =
             item.href === "/dashboard"
               ? pathname === "/dashboard"
-              : pathname.startsWith(item.href);
+              : item.href === "/dashboard/settings"
+                ? pathname.startsWith("/dashboard/settings") ||
+                  pathname.startsWith("/dashboard/password")
+                : pathname.startsWith(item.href);
           return (
             <Link
               key={item.href}
