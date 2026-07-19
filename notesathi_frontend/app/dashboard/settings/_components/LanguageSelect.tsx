@@ -3,18 +3,15 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { handleUpdateSettings } from "@/lib/actions/auth-action";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 const LANGUAGES: { value: "en" | "ne"; label: string }[] = [
   { value: "en", label: "English" },
   { value: "ne", label: "Nepali (नेपाली)" },
 ];
 
-export default function LanguageSelect({
-  initialLanguage,
-}: {
-  initialLanguage: "en" | "ne";
-}) {
-  const [language, setLanguage] = useState(initialLanguage);
+export default function LanguageSelect() {
+  const { language, setLanguage } = useLanguage();
   const [pending, setPending] = useState(false);
 
   const onChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {

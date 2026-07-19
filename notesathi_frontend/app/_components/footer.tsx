@@ -1,44 +1,53 @@
+"use client";
+
 import Link from "next/link";
 import { Globe, Mail, Share2 } from "lucide-react";
 import Logo from "./logo";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { TranslationKey } from "@/lib/i18n/translations";
 
-const columns = [
+const columns: {
+  titleKey: TranslationKey;
+  links: { labelKey: TranslationKey; href: string }[];
+}[] = [
   {
-    title: "Product",
+    titleKey: "footer.product",
     links: [
-      { label: "Browse Notes", href: "/login" },
-      { label: "Upload Notes", href: "/login" },
-      { label: "Community", href: "/login" },
+      { labelKey: "footer.browseNotes", href: "/login" },
+      { labelKey: "footer.uploadNotes", href: "/login" },
+      { labelKey: "footer.community", href: "/login" },
     ],
   },
   {
-    title: "Company",
+    titleKey: "footer.company",
     links: [
-      { label: "About", href: "/" },
-      { label: "Contact", href: "mailto:hello@notesathi.com" },
+      { labelKey: "footer.about", href: "/" },
+      { labelKey: "footer.contact", href: "mailto:hello@notesathi.com" },
     ],
   },
   {
-    title: "Legal",
+    titleKey: "footer.legal",
     links: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
+      { labelKey: "footer.privacyPolicy", href: "/privacy" },
+      { labelKey: "footer.termsOfService", href: "/terms" },
     ],
   },
 ];
 
 export default function Footer({ compact = false }: { compact?: boolean }) {
+  const { t } = useLanguage();
+
   if (compact) {
     return (
       <footer className="border-t border-slate-100 bg-white">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-2 px-6 py-4 text-xs text-slate-400 sm:flex-row">
-          <p>&copy; {new Date().getFullYear()} Notesathi. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Notesathi. {t("footer.rights")}</p>
           <div className="flex items-center gap-4">
             <Link href="/privacy" className="transition-colors hover:text-slate-600">
-              Privacy
+              {t("footer.privacy")}
             </Link>
             <Link href="/terms" className="transition-colors hover:text-slate-600">
-              Terms
+              {t("footer.terms")}
             </Link>
             <Link href="mailto:hello@notesathi.com" aria-label="Email" className="transition-colors hover:text-violet-600">
               <Mail className="h-3.5 w-3.5" />
@@ -56,7 +65,7 @@ export default function Footer({ compact = false }: { compact?: boolean }) {
           <div className="col-span-2 sm:col-span-1">
             <Logo />
             <p className="mt-3 max-w-55 text-sm text-slate-500">
-              Collaborative notes and resources for students, everywhere.
+              {t("footer.tagline")}
             </p>
             <div className="mt-4 flex items-center gap-3 text-slate-400">
               <Link href="mailto:hello@notesathi.com" aria-label="Email" className="transition-colors hover:text-violet-600">
@@ -72,18 +81,18 @@ export default function Footer({ compact = false }: { compact?: boolean }) {
           </div>
 
           {columns.map((col) => (
-            <div key={col.title}>
+            <div key={col.titleKey}>
               <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
-                {col.title}
+                {t(col.titleKey)}
               </p>
               <ul className="mt-4 space-y-3">
                 {col.links.map((link) => (
-                  <li key={link.label}>
+                  <li key={link.labelKey}>
                     <Link
                       href={link.href}
                       className="text-sm text-slate-600 transition-colors hover:text-slate-900"
                     >
-                      {link.label}
+                      {t(link.labelKey)}
                     </Link>
                   </li>
                 ))}
@@ -94,9 +103,9 @@ export default function Footer({ compact = false }: { compact?: boolean }) {
 
         <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-slate-100 pt-8 sm:flex-row sm:items-center">
           <p className="text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} Notesathi. All rights reserved.
+            &copy; {new Date().getFullYear()} Notesathi. {t("footer.rights")}
           </p>
-          <p className="text-xs text-slate-400">Made for students, by students.</p>
+          <p className="text-xs text-slate-400">{t("footer.madeFor")}</p>
         </div>
       </div>
     </footer>

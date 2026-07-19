@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { LogOut, Search } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/lib/context/AuthContext";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 import NotificationBell from "./NotificationBell";
 
 export default function Topbar({
@@ -14,6 +15,7 @@ export default function Topbar({
   initialUnreadCount?: number;
 }) {
   const { user, logout } = useAuth();
+  const { t } = useLanguage();
   const router = useRouter();
   const [query, setQuery] = useState("");
 
@@ -33,7 +35,7 @@ export default function Topbar({
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           type="search"
-          placeholder="Search notes, community, resources..."
+          placeholder={t("topbar.searchPlaceholder")}
           className="h-10 w-full rounded-lg bg-slate-50 pl-9 pr-3 text-sm text-slate-700 outline-none placeholder:text-slate-400 focus:ring-2 focus:ring-violet-200"
         />
       </form>
@@ -43,19 +45,19 @@ export default function Topbar({
           href="/dashboard/browse"
           className="text-sm text-slate-600 transition-colors hover:text-slate-900"
         >
-          Browse
+          {t("topbar.browse")}
         </Link>
         <button
-          onClick={() => toast.info("Community is coming soon!")}
+          onClick={() => toast.info(t("topbar.communitySoon"))}
           className="text-sm text-slate-600 transition-colors hover:text-slate-900"
         >
-          Community
+          {t("topbar.community")}
         </button>
         <button
-          onClick={() => toast.info("Resources is coming soon!")}
+          onClick={() => toast.info(t("topbar.resourcesSoon"))}
           className="text-sm text-slate-600 transition-colors hover:text-slate-900"
         >
-          Resources
+          {t("topbar.resources")}
         </button>
       </nav>
 
@@ -64,7 +66,7 @@ export default function Topbar({
           href="/dashboard/notes/new"
           className="hidden h-9 items-center rounded-full bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-700 sm:flex"
         >
-          Upload
+          {t("topbar.upload")}
         </Link>
         <NotificationBell initialUnreadCount={initialUnreadCount} />
         <Link

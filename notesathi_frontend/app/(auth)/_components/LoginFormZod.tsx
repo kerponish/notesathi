@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LoginFormData, loginSchema } from "./schema";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { handleLoginUser } from "@/lib/actions/auth-action";
 
@@ -85,8 +86,8 @@ export default function LoginFormZod() {
             PASSWORD
           </label>
 
-          <button
-            type="button"
+          <Link
+            href="/forgot-password"
             className="
               text-sm
               text-[#5B4DFF]
@@ -94,7 +95,7 @@ export default function LoginFormZod() {
             "
           >
             Forgot password?
-          </button>
+          </Link>
         </div>
 
         <input

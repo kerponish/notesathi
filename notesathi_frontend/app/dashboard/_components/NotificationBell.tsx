@@ -10,12 +10,14 @@ import {
 } from "@/lib/actions/notification-action";
 import { AppNotification } from "@/lib/types/notification";
 import { timeAgo } from "@/lib/utils/time";
+import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 export default function NotificationBell({
   initialUnreadCount,
 }: {
   initialUnreadCount: number;
 }) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -81,13 +83,15 @@ export default function NotificationBell({
       {open && (
         <div className="absolute right-0 top-11 z-50 w-80 rounded-2xl border border-slate-100 bg-white shadow-lg">
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
-            <p className="text-sm font-semibold text-slate-900">Notifications</p>
+            <p className="text-sm font-semibold text-slate-900">
+              {t("notifications.title")}
+            </p>
             {unreadCount > 0 && (
               <button
                 onClick={markAllRead}
                 className="text-xs font-medium text-violet-600 hover:text-violet-700"
               >
-                Mark all as read
+                {t("notifications.markAllRead")}
               </button>
             )}
           </div>
@@ -95,11 +99,11 @@ export default function NotificationBell({
           <div className="max-h-96 overflow-y-auto">
             {loading ? (
               <p className="px-4 py-6 text-center text-sm text-slate-400">
-                Loading...
+                {t("notifications.loading")}
               </p>
             ) : notifications.length === 0 ? (
               <p className="px-4 py-6 text-center text-sm text-slate-400">
-                No notifications yet.
+                {t("notifications.empty")}
               </p>
             ) : (
               notifications.map((notification) => (
@@ -121,12 +125,14 @@ export default function NotificationBell({
                   <div className="min-w-0 flex-1">
                     <p className="text-slate-700">
                       <span className="font-semibold text-slate-900">
-                        {notification.fromUserId?.fullname || "Someone"}
+                        {notification.fromUserId?.fullname || t("notifications.someone")}
                       </span>{" "}
-                      {notification.type === "like" ? "liked" : "commented on"} your
-                      note{" "}
+                      {notification.type === "like"
+                        ? t("notifications.liked")
+                        : t("notifications.commented")}{" "}
+                      {t("notifications.yourNote")}{" "}
                       <span className="font-medium text-slate-900">
-                        &ldquo;{notification.noteId?.title || "a note"}&rdquo;
+                        &ldquo;{notification.noteId?.title || t("notifications.aNote")}&rdquo;
                       </span>
                     </p>
                     <p className="mt-0.5 text-xs text-slate-400">
