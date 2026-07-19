@@ -1,5 +1,6 @@
 import LoginFormZod from "../_components/LoginFormZod";
 import Link from "next/link";
+import GoogleAuthButton from "../_components/GoogleAuthButton";
 
 export default function LoginPage() {
   return (
@@ -49,13 +50,7 @@ export default function LoginPage() {
             </div>
 
             {/* Google Button */}
-            <button className="w-full border border-gray-300 rounded-xl py-3 flex items-center justify-center gap-3 hover:bg-gray-50 transition">
-              <img src="/images/google.png" alt="Google" className="w-5 h-5" />
-
-              <span className="font-medium text-gray-700">
-                Continue with Google
-              </span>
-            </button>
+            <GoogleAuthButton />
 
             {/* Divider */}
             <div className="flex items-center gap-4 my-8">

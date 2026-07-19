@@ -58,6 +58,11 @@ export type UpdatePasswordDTO = z.infer<typeof UpdatePasswordDTO>;
 export const ForgotPasswordDTO = UserSchema.pick({ email: true });
 export type ForgotPasswordDTO = z.infer<typeof ForgotPasswordDTO>;
 
+export const GoogleAuthDTO = z.object({
+  idToken: z.string().min(1, "idToken is required"),
+});
+export type GoogleAuthDTO = z.infer<typeof GoogleAuthDTO>;
+
 export const ResetPasswordDTO = z
   .object({
     token: z.string().min(1, "Reset token is required"),

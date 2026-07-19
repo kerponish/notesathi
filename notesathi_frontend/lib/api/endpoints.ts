@@ -2,6 +2,7 @@ export const API = {
   AUTH: {
     REGISTER: "/api/users/register",
     LOGIN: "/api/users/login",
+    GOOGLE: "/api/users/google",
     WHOAMI: "/api/users/whoami",
     PROFILE: "/api/users/update",
     UPDATE_PASSWORD: "/api/users/change-password",

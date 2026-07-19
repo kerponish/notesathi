@@ -10,10 +10,12 @@ import { HttpException } from "../exceptions/http-exception";
 import bycryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import { SECRET_KEY, FRONTEND_URL } from "../config/constant";
+import { OAuth2Client } from "google-auth-library";
+import { SECRET_KEY, FRONTEND_URL, GOOGLE_CLIENT_ID } from "../config/constant";
 import { sendPasswordResetEmail } from "../utils/mailer";
 
 const userRepository = new UserMongoRepository();
+const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
 export class UserService {
   async createUser(
@@ -37,6 +39,12 @@ export class UserService {
     if (!user) {
       throw new HttpException(400, "Invalid email");
     }
+    if (!user.password) {
+      throw new HttpException(
+        400,
+        "This account uses Google Sign-In. Please continue with Google.",
+      );
+    }
     const isPasswordValid = await bycryptjs.compare(
       loginData.password, // client password
       user.password, // database password
@@ -46,6 +54,51 @@ export class UserService {
     }
     const token = jwt.sign(
       { id: user._id, email: user.email, role: user.role }, // payload
+      SECRET_KEY,
+      { expiresIn: "30d" },
+    );
+    return { user, token };
+  }
+
+  async googleAuth(idToken: string) {
+    let payload;
+    try {
+      const ticket = await googleClient.verifyIdToken({
+        idToken,
+        audience: GOOGLE_CLIENT_ID,
+      });
+      payload = ticket.getPayload();
+    } catch {
+      throw new HttpException(400, "Invalid Google token");
+    }
+
+    if (!payload || !payload.email) {
+      throw new HttpException(400, "Invalid Google token");
+    }
+    if (!payload.email_verified) {
+      throw new HttpException(400, "Google email is not verified");
+    }
+
+    let user = await userRepository.getUserByEmail(payload.email);
+    if (user) {
+      if (!user.googleId) {
+        const updated = await userRepository.update(user._id.toString(), {
+          googleId: payload.sub,
+        });
+        if (updated) user = updated;
+      }
+    } else {
+      user = await userRepository.createUser({
+        fullname: payload.name || payload.email,
+        email: payload.email,
+        googleId: payload.sub,
+        provider: "google",
+        profilePicture: payload.picture,
+      });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
       SECRET_KEY,
       { expiresIn: "30d" },
     );

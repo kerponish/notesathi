@@ -15,9 +15,17 @@ const UserMongoSchema: Schema = new Schema<IUser>(
   {
     fullname: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    // Google-created accounts have no password, so this is only required for local accounts.
+    password: {
+      type: String,
+      required: function (this: IUser) {
+        return this.provider !== "google";
+      },
+    },
 
     role: { type: String, enum: ["admin", "user"], default: "user" },
+    provider: { type: String, enum: ["local", "google"], default: "local" },
+    googleId: { type: String, required: false, unique: true, sparse: true },
     profilePicture: { type: String, required: false },
     notificationsEnabled: { type: Boolean, default: true },
     language: { type: String, enum: ["en", "ne"], default: "en" },

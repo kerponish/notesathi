@@ -8,6 +8,7 @@ const router = Router();
 
 router.post("/register", userController.createUser);
 router.post("/login", userController.loginUser);
+router.post("/google", userController.googleAuth);
 router.get("/whoami", authorizedMiddleware, userController.whoAmI);
 
 router.post("/forgot-password", userController.forgotPassword);

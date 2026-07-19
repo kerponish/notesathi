@@ -2,6 +2,7 @@
 import {
   register,
   login,
+  googleAuth,
   whoami,
   updateProfile,
   updatePassword,
@@ -52,6 +53,30 @@ export const handleLoginUser = async (data: LoginFormData) => {
     }
   } catch (error: Error | any) {
     return { success: false, message: error?.message || "Login failed" };
+  }
+};
+
+export const handleGoogleAuth = async (idToken: string) => {
+  try {
+    const result = await googleAuth(idToken);
+    const user = result.data.user;
+    const token = result.data.token;
+    await setTokenCookie(token);
+    await storeUserData(user);
+
+    if (result.success) {
+      return { success: true, message: result.message, data: result.data };
+    } else {
+      return {
+        success: false,
+        message: result.message || "Google sign-in failed",
+      };
+    }
+  } catch (error: Error | any) {
+    return {
+      success: false,
+      message: error?.message || "Google sign-in failed",
+    };
   }
 };
 

@@ -8,6 +8,7 @@ import {
   UpdatePasswordDTO,
   ForgotPasswordDTO,
   ResetPasswordDTO,
+  GoogleAuthDTO,
 } from "../dtos/user_dto";
 import { ApiResponseHelper } from "../utils/api-response";
 import { Request, Response } from "express";
@@ -59,6 +60,33 @@ export class UserController {
       return ApiResponseHelper.error(
         res,
         e?.message || "Failed to login user",
+        e.status || 500,
+      );
+    }
+  }
+
+  async googleAuth(req: Request, res: Response) {
+    try {
+      const parseResult = GoogleAuthDTO.safeParse(req.body);
+
+      if (!parseResult.success) {
+        throw new HttpException(400, z.prettifyError(parseResult.error));
+      }
+
+      const { user, token } = await userService.googleAuth(
+        parseResult.data.idToken,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        { user, token },
+        "Google login successful",
+        201,
+      );
+    } catch (e: Error | unknown | any) {
+      return ApiResponseHelper.error(
+        res,
+        e?.message || "Failed to sign in with Google",
         e.status || 500,
       );
     }

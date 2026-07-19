@@ -26,6 +26,18 @@ export const login = async (data: LoginFormData) => {
   }
 };
 
+export const googleAuth = async (idToken: string) => {
+  try {
+    const response = await axiosInstance.post(API.AUTH.GOOGLE, { idToken });
+
+    return response.data;
+  } catch (error: Error | any) {
+    throw new Error(
+      error?.response?.data?.message || "Google sign-in failed",
+    );
+  }
+};
+
 export const whoami = async () => {
   try {
     const response = await axiosInstance.get(API.AUTH.WHOAMI);

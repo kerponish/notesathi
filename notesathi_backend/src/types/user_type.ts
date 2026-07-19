@@ -6,6 +6,8 @@ export const UserSchema = z.object({
   password: z.string().min(6),
   profilePicture: z.string().optional(),
   role: z.enum(["admin", "user"]).default("user"),
+  provider: z.enum(["local", "google"]).optional(),
+  googleId: z.string().optional(),
   // no zod .default() here on purpose: UpdateUserDTO = UserSchema.partial()
   // reuses this schema, and a .default() would inject the default value into
   // every partial update that omits the field, silently overwriting whatever
