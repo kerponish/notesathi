@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { handleAddComment } from "@/lib/actions/comment-action";
 import { Comment } from "@/lib/types/comment";
 import { timeAgo } from "@/lib/utils/time";
+import Avatar from "@/app/_components/avatar";
 
 export default function CommentSection({
   noteId,
@@ -14,7 +15,7 @@ export default function CommentSection({
 }: {
   noteId: string;
   initialComments: Comment[];
-  currentUser: { _id: string; fullname: string; email: string };
+  currentUser: { _id: string; fullname: string; email: string; profilePicture?: string };
 }) {
   const [comments, setComments] = useState(initialComments);
   const [text, setText] = useState("");
@@ -42,15 +43,20 @@ export default function CommentSection({
   };
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-6">
+    <div className="rounded-lg border border-slate-200 bg-white p-6">
       <h2 className="text-base font-bold text-slate-900">
         Comments ({comments.length})
       </h2>
 
       <form onSubmit={onSubmit} className="mt-4 flex items-start gap-3">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-medium text-white">
-          {(currentUser.fullname?.[0] || "U").toUpperCase()}
-        </div>
+        <Avatar
+          name={currentUser.fullname}
+          email={currentUser.email}
+          src={currentUser.profilePicture}
+          size={36}
+          className="text-sm font-medium"
+          fallbackClassName="bg-slate-900 text-white text-sm font-medium"
+        />
         <div className="flex flex-1 items-center gap-2">
           <input
             value={text}
@@ -77,9 +83,14 @@ export default function CommentSection({
         )}
         {comments.map((comment) => (
           <div key={comment._id} className="flex items-start gap-3">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-violet-100 text-sm font-medium text-violet-700">
-              {(comment.userId?.fullname?.[0] || "U").toUpperCase()}
-            </div>
+            <Avatar
+              name={comment.userId?.fullname}
+              email={comment.userId?.email}
+              src={comment.userId?.profilePicture}
+              size={36}
+              className="text-sm font-medium"
+              fallbackClassName="bg-violet-100 text-violet-700 text-sm font-medium"
+            />
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <p className="text-sm font-semibold text-slate-900">

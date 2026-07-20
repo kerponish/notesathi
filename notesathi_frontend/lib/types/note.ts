@@ -2,6 +2,7 @@ export interface NoteAuthor {
   _id: string;
   fullname: string;
   email: string;
+  profilePicture?: string;
 }
 
 export interface NoteSubject {

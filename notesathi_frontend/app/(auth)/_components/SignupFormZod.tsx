@@ -63,7 +63,7 @@ export default function RegisterFormZod() {
           type="text"
           placeholder="Enter your full name"
           {...register("fullname")}
-          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
+          className="w-full border border-gray-300 rounded-md px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.fullname && (
@@ -81,7 +81,7 @@ export default function RegisterFormZod() {
           type="email"
           placeholder="Enter your email"
           {...register("email")}
-          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
+          className="w-full border border-gray-300 rounded-md px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.email && (
@@ -99,7 +99,7 @@ export default function RegisterFormZod() {
           type="password"
           placeholder="********"
           {...register("password")}
-          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
+          className="w-full border border-gray-300 rounded-md px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.password && (
@@ -117,7 +117,7 @@ export default function RegisterFormZod() {
           type="password"
           placeholder="********"
           {...register("confirmPassword")}
-          className="w-full border border-gray-300 rounded-xl px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
+          className="w-full border border-gray-300 rounded-md px-4 py-3 bg-white text-black placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-[#5B4DFF]"
         />
 
         {errors.confirmPassword && (
@@ -131,7 +131,7 @@ export default function RegisterFormZod() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-[#5B4DFF] text-white py-3 rounded-xl font-semibold hover:opacity-90 transition disabled:opacity-50"
+        className="w-full bg-[#5B4DFF] text-white py-3 rounded-md font-semibold hover:opacity-90 transition disabled:opacity-50"
       >
         {isSubmitting ? "Creating Account..." : "Create Account"}
       </button>

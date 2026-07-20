@@ -46,14 +46,14 @@ export default async function ProfilePage() {
             </Link>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-4">
+          <div className="mt-4 grid grid-cols-2 gap-6">
             {uploadedNotes.map((note) => (
               <ProfileNoteCard key={note._id} note={note} />
             ))}
 
             <Link
               href="/dashboard/notes/new"
-              className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-200 p-6 text-center transition-colors hover:border-violet-300 hover:bg-violet-50/50"
+              className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-200 p-6 text-center transition-colors hover:border-violet-300 hover:bg-violet-50/50"
             >
               <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
                 <Upload className="h-4 w-4" />

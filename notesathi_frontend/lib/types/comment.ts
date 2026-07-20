@@ -5,6 +5,7 @@ export interface Comment {
     _id: string;
     fullname: string;
     email: string;
+    profilePicture?: string;
   };
   text: string;
   createdAt: string;

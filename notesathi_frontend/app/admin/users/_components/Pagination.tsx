@@ -24,17 +24,17 @@ export default function Pagination({ meta }: { meta: any }) {
       <button
         disabled={page <= 1}
         onClick={() => go(page - 1)}
-        className="rounded border px-4 py-2 disabled:opacity-50"
+        className="rounded-md border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
       >
         Previous
       </button>
 
-      <span className="rounded bg-[#246BFD] px-4 py-2 text-white">{page}</span>
+      <span className="rounded-md bg-[#246BFD] px-4 py-2 text-sm font-medium text-white">{page}</span>
 
       <button
         disabled={page >= totalPages}
         onClick={() => go(page + 1)}
-        className="rounded border px-4 py-2 disabled:opacity-50"
+        className="rounded-md border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
       >
         Next
       </button>

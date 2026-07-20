@@ -14,6 +14,8 @@ export const API = {
     SEARCH: "/api/note/search",
     CREATE: "/api/note/create",
     GET_BY_ID: (id: string) => `/api/note/${id}`,
+    UPDATE: (id: string) => `/api/note/${id}`,
+    DELETE: (id: string) => `/api/note/${id}`,
     LIKE: (id: string) => `/api/note/${id}/like`,
     COMMENTS: (id: string) => `/api/note/${id}/comments`,
     QUIZ: (id: string) => `/api/note/${id}/quiz`,

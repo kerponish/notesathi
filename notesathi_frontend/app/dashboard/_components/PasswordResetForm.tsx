@@ -50,7 +50,7 @@ export default function UpdatePasswordForm() {
   const errClass = "mt-1 block text-xs text-red-500";
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-slate-100 bg-white p-6">
+    <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6">
       <h1 className="text-lg font-bold text-slate-900">Change Password</h1>
       <p className="mt-1 text-sm text-slate-500">
         Choose a strong password you don&apos;t use elsewhere.

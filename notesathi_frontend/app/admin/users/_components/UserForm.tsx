@@ -41,7 +41,7 @@ export default function UserForm() {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-gray-300 px-4 py-3 pl-11 text-slate-900 font-medium placeholder:text-slate-400 placeholder:font-normal outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+    "w-full rounded-md border border-gray-300 px-4 py-3 pl-11 text-slate-900 font-medium placeholder:text-slate-400 placeholder:font-normal outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
   return (
     <form
@@ -133,7 +133,7 @@ export default function UserForm() {
         <button
           type="button"
           onClick={() => router.push("/admin/users")}
-          className="rounded-xl border border-gray-300 px-6 py-3 font-medium text-gray-700 transition hover:bg-gray-100"
+          className="rounded-md border border-gray-300 px-6 py-3 font-medium text-gray-700 transition hover:bg-gray-100"
         >
           Cancel
         </button>
@@ -141,7 +141,7 @@ export default function UserForm() {
         <button
           type="submit"
           disabled={isPending}
-          className="flex items-center gap-2 rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="flex items-center gap-2 rounded-md bg-blue-600 px-8 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {isPending && <Loader2 size={16} className="animate-spin" />}
           {isPending ? "Creating..." : "Create User"}

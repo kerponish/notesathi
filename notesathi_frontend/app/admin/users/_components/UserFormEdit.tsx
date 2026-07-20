@@ -45,7 +45,7 @@ export default function UserFormEdit({ user }: Props) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
+    <div className="mx-auto w-full max-w-2xl rounded-lg border border-slate-200 bg-white p-8 shadow-sm">
       {/* Header */}
       <div className="mb-8 flex items-center gap-4 border-b border-slate-100 pb-6">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-xl font-semibold text-[#246BFD]">
@@ -75,7 +75,7 @@ export default function UserFormEdit({ user }: Props) {
               {...register("fullname", {
                 required: "Full name is required",
               })}
-              className={`w-full rounded-xl border px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-4 focus:ring-blue-50 ${
+              className={`w-full rounded-md border px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-2 focus:ring-blue-50 ${
                 errors.fullname ? "border-red-300" : "border-slate-300"
               }`}
               placeholder="John Doe"
@@ -105,7 +105,7 @@ export default function UserFormEdit({ user }: Props) {
               {...register("email", {
                 required: "Email is required",
               })}
-              className={`w-full rounded-xl border px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-4 focus:ring-blue-50 ${
+              className={`w-full rounded-md border px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-2 focus:ring-blue-50 ${
                 errors.email ? "border-red-300" : "border-slate-300"
               }`}
               placeholder="john@example.com"
@@ -132,7 +132,7 @@ export default function UserFormEdit({ user }: Props) {
             />
             <select
               {...register("role")}
-              className="w-full appearance-none rounded-xl border border-slate-300 px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-4 focus:ring-blue-50"
+              className="w-full appearance-none rounded-md border border-slate-300 px-5 py-3.5 pl-12 text-slate-700 outline-none transition focus:border-[#246BFD] focus:ring-2 focus:ring-blue-50"
             >
               <option value="user">User</option>
               <option value="admin">Admin</option>
@@ -145,7 +145,7 @@ export default function UserFormEdit({ user }: Props) {
           <button
             type="button"
             onClick={() => router.push("/admin/users")}
-            className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
+            className="flex items-center gap-2 rounded-md border border-slate-300 bg-white px-6 py-3 font-semibold text-slate-700 transition hover:bg-slate-50"
           >
             <X size={16} />
             Cancel
@@ -154,7 +154,7 @@ export default function UserFormEdit({ user }: Props) {
           <button
             type="submit"
             disabled={isPending}
-            className="flex items-center gap-2 rounded-xl bg-[#246BFD] px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex items-center gap-2 rounded-md bg-[#246BFD] px-6 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isPending && <Loader2 size={16} className="animate-spin" />}
             {isPending ? "Updating..." : "Update User"}

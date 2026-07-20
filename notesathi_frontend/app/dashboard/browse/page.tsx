@@ -27,11 +27,11 @@ export default async function BrowsePage({
       </div>
 
       {notes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
+        <p className="rounded-lg border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
           {q ? `No notes found for "${q}".` : "No notes have been shared yet."}
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-6">
           {notes.map((note) => (
             <NoteCard key={note._id} note={note} />
           ))}

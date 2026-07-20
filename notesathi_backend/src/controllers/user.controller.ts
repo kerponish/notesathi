@@ -146,6 +146,10 @@ export class UserController {
         throw new HttpException(400, z.prettifyError(parseResult.error));
       }
 
+      if (req.file) {
+        parseResult.data.profilePicture = "/uploads/" + req.file.filename;
+      }
+
       const userId = (req.user as any)._id || (req.user as any).id;
 
       const user = await userService.updateUser(

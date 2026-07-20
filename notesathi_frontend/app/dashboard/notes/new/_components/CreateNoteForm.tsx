@@ -58,7 +58,7 @@ export default function CreateNoteForm({ subjects }: { subjects: Subject[] }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="grid gap-6 lg:grid-cols-2">
-      <div className="rounded-2xl border border-slate-100 bg-white p-6">
+      <div className="rounded-lg border border-slate-100 bg-white p-6">
         <h2 className="text-lg font-bold text-slate-900">Note Details</h2>
 
         <div className="mt-5">
@@ -140,7 +140,7 @@ export default function CreateNoteForm({ subjects }: { subjects: Subject[] }) {
       </div>
 
       <div className="flex flex-col gap-6">
-        <div className="rounded-2xl border border-slate-100 bg-white p-6">
+        <div className="rounded-lg border border-slate-100 bg-white p-6">
           <h2 className="text-lg font-bold text-slate-900">File Upload</h2>
 
           <div className="mt-5">
@@ -189,7 +189,7 @@ export default function CreateNoteForm({ subjects }: { subjects: Subject[] }) {
           </div>
         </div>
 
-        <div className="rounded-2xl bg-violet-600 p-6 text-white">
+        <div className="rounded-lg bg-violet-600 p-6 text-white">
           <h3 className="text-base font-bold">Quality Check</h3>
           <p className="mt-2 text-sm text-violet-100">
             Ensure your notes are clear, well-formatted, and original.

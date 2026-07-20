@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
 import { handleDeleteUser } from "@/lib/actions/admin/user-action";
+import Avatar from "@/app/_components/avatar";
 import DeleteUserModal from "./DeleteUserModal";
 
 interface Props {
@@ -42,7 +43,7 @@ export default function UsersTable({ users }: Props) {
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border bg-white shadow-lg">
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         <table className="w-full">
           <thead className="bg-[#246BFD] text-white">
             <tr>
@@ -70,14 +71,14 @@ export default function UsersTable({ users }: Props) {
                   {/* User */}
                   <td className="p-5">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#246BFD] font-bold text-white">
-                        {user.fullname
-                          ?.split(" ")
-                          .map((x: string) => x[0])
-                          .join("")
-                          .substring(0, 2)
-                          .toUpperCase()}
-                      </div>
+                      <Avatar
+                        name={user.fullname}
+                        email={user.email}
+                        src={user.profilePicture}
+                        size={44}
+                        className="font-bold"
+                        fallbackClassName="bg-[#246BFD] text-white font-bold"
+                      />
 
                       <div>
                         <p className="font-semibold text-gray-800">
@@ -92,7 +93,7 @@ export default function UsersTable({ users }: Props) {
                   {/* Role */}
                   <td>
                     <span
-                      className={`rounded-full px-4 py-1 text-xs font-semibold ${
+                      className={`rounded-md px-3 py-1 text-xs font-semibold ${
                         user.role === "admin"
                           ? "bg-blue-100 text-blue-700"
                           : "bg-gray-100 text-gray-700"
@@ -109,7 +110,7 @@ export default function UsersTable({ users }: Props) {
 
                   {/* Status */}
                   <td>
-                    <span className="rounded-full bg-green-100 px-4 py-1 text-xs font-semibold text-green-700">
+                    <span className="rounded-md bg-green-100 px-3 py-1 text-xs font-semibold text-green-700">
                       Active
                     </span>
                   </td>

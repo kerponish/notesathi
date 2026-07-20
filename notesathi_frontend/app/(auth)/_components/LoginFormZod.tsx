@@ -60,7 +60,7 @@ export default function LoginFormZod() {
             w-full
             border
             border-gray-300
-            rounded-xl
+            rounded-md
             px-4
             py-3
             bg-white
@@ -106,7 +106,7 @@ export default function LoginFormZod() {
             w-full
             border
             border-gray-300
-            rounded-xl
+            rounded-md
             px-4
             py-3
             bg-white
@@ -134,7 +134,7 @@ export default function LoginFormZod() {
           bg-[#5B4DFF]
           text-white
           py-3
-          rounded-xl
+          rounded-md
           font-semibold
           hover:opacity-90
           transition

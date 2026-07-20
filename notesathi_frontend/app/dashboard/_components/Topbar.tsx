@@ -7,6 +7,7 @@ import { LogOut, Search } from "lucide-react";
 import { toast } from "react-toastify";
 import { useAuth } from "@/lib/context/AuthContext";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import Avatar from "@/app/_components/avatar";
 import NotificationBell from "./NotificationBell";
 
 export default function Topbar({
@@ -24,8 +25,6 @@ export default function Topbar({
     const q = query.trim();
     router.push(q ? `/dashboard/browse?q=${encodeURIComponent(q)}` : "/dashboard/browse");
   };
-
-  const initial = (user?.fullname?.[0] || user?.email?.[0] || "U").toUpperCase();
 
   return (
     <header className="flex h-16 items-center gap-4 border-b border-slate-100 bg-white px-6">
@@ -47,6 +46,12 @@ export default function Topbar({
         >
           {t("topbar.browse")}
         </Link>
+        <Link
+          href="/dashboard/categories"
+          className="text-sm text-slate-600 transition-colors hover:text-slate-900"
+        >
+          {t("topbar.categories")}
+        </Link>
         <button
           onClick={() => toast.info(t("topbar.communitySoon"))}
           className="text-sm text-slate-600 transition-colors hover:text-slate-900"
@@ -64,17 +69,20 @@ export default function Topbar({
       <div className="ml-auto flex items-center gap-3 lg:ml-0">
         <Link
           href="/dashboard/notes/new"
-          className="hidden h-9 items-center rounded-full bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-700 sm:flex"
+          className="hidden h-9 items-center rounded-md bg-violet-600 px-4 text-sm font-medium text-white transition-colors hover:bg-violet-700 sm:flex"
         >
           {t("topbar.upload")}
         </Link>
         <NotificationBell initialUnreadCount={initialUnreadCount} />
-        <Link
-          href="/dashboard/profile"
-          aria-label="Profile"
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-medium text-white"
-        >
-          {initial}
+        <Link href="/dashboard/profile" aria-label="Profile">
+          <Avatar
+            name={user?.fullname}
+            email={user?.email}
+            src={user?.profilePicture}
+            size={36}
+            className="text-sm font-medium"
+            fallbackClassName="bg-slate-900 text-white text-sm font-medium"
+          />
         </Link>
         <button
           aria-label="Logout"

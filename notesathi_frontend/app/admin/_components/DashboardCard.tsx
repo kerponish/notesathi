@@ -12,7 +12,7 @@ export default function DashboardCards({ total, admins, users }: Props) {
     <div className="grid gap-6 lg:grid-cols-4">
       {/* Total */}
 
-      <div className="rounded-2xl bg-blue-600 p-6 text-white shadow">
+      <div className="rounded-lg bg-blue-600 p-6 text-white shadow-sm">
         <div className="flex justify-between">
           <div>
             <p className="text-sm opacity-90">Total Users</p>
@@ -26,7 +26,7 @@ export default function DashboardCards({ total, admins, users }: Props) {
 
       {/* Admin */}
 
-      <div className="rounded-2xl bg-blue-500 p-6 text-white shadow">
+      <div className="rounded-lg bg-blue-500 p-6 text-white shadow-sm">
         <div className="flex justify-between">
           <div>
             <p className="text-sm opacity-90">Admins</p>
@@ -40,7 +40,7 @@ export default function DashboardCards({ total, admins, users }: Props) {
 
       {/* Users */}
 
-      <div className="rounded-2xl bg-blue-400 p-6 text-white shadow">
+      <div className="rounded-lg bg-blue-400 p-6 text-white shadow-sm">
         <div className="flex justify-between">
           <div>
             <p className="text-sm opacity-90">Users</p>
@@ -56,7 +56,7 @@ export default function DashboardCards({ total, admins, users }: Props) {
 
       <Link
         href="/admin/users/create"
-        className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-blue-400 bg-white p-6 transition hover:bg-blue-50"
+        className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-blue-400 bg-white p-6 transition hover:bg-blue-50"
       >
         <Plus className="mb-2 text-blue-600" size={40} />
 

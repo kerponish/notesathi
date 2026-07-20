@@ -41,7 +41,7 @@ export default function FileDropzone({
 
   if (file) {
     return (
-      <div className="flex items-center gap-3 rounded-xl border border-slate-100 bg-slate-50 p-4">
+      <div className="flex items-center gap-3 rounded-lg border border-slate-100 bg-slate-50 p-4">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
           <FileText className="h-4 w-4" />
         </div>
@@ -87,7 +87,7 @@ export default function FileDropzone({
           setDragging(false);
           handleFile(e.dataTransfer.files?.[0]);
         }}
-        className={`flex flex-col items-center rounded-xl border-2 border-dashed px-6 py-8 text-center transition-colors ${
+        className={`flex flex-col items-center rounded-lg border-2 border-dashed px-6 py-8 text-center transition-colors ${
           dragging ? "border-violet-400 bg-violet-50" : "border-slate-200"
         }`}
       >

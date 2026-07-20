@@ -102,7 +102,7 @@ export default function UpdateForm({ user }: { user: any }) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="max-w-xl rounded-2xl border border-slate-100 bg-white p-6"
+      className="max-w-xl rounded-lg border border-slate-200 bg-white p-6"
     >
       <div className="flex items-center gap-4">
         <div className="relative">
@@ -113,10 +113,10 @@ export default function UpdateForm({ user }: { user: any }) {
               width={72}
               height={72}
               unoptimized
-              className="h-18 w-18 rounded-2xl object-cover"
+              className="h-18 w-18 rounded-lg object-cover"
             />
           ) : (
-            <div className="flex h-18 w-18 items-center justify-center rounded-2xl bg-slate-900 text-2xl font-semibold text-white">
+            <div className="flex h-18 w-18 items-center justify-center rounded-lg bg-slate-900 text-2xl font-semibold text-white">
               {initial}
             </div>
           )}

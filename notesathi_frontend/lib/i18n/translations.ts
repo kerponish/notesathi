@@ -6,17 +6,29 @@ export const translations = {
     "sidebar.workspace": "Workspace",
     "sidebar.dashboard": "Dashboard",
     "sidebar.myNotes": "My Notes",
+    "sidebar.profile": "Profile",
     "sidebar.settings": "Settings",
     "sidebar.createNote": "Create New Note",
 
     // Topbar
     "topbar.searchPlaceholder": "Search notes, community, resources...",
     "topbar.browse": "Browse",
+    "topbar.categories": "Categories",
     "topbar.community": "Community",
     "topbar.resources": "Resources",
     "topbar.upload": "Upload",
     "topbar.communitySoon": "Community is coming soon!",
     "topbar.resourcesSoon": "Resources is coming soon!",
+
+    // Categories
+    "categories.title": "Categories",
+    "categories.subtitle": "Find notes by class and subject.",
+    "categories.class": "Class",
+    "categories.subject": "Subject",
+    "categories.allClasses": "All Classes",
+    "categories.allSubjects": "All Subjects",
+    "categories.classPrefix": "Class",
+    "categories.noResults": "No notes match this class and subject yet.",
 
     // Notifications
     "notifications.title": "Notifications",
@@ -99,17 +111,29 @@ export const translations = {
     "sidebar.workspace": "कार्यक्षेत्र",
     "sidebar.dashboard": "ड्यासबोर्ड",
     "sidebar.myNotes": "मेरा नोटहरू",
+    "sidebar.profile": "प्रोफाइल",
     "sidebar.settings": "सेटिङ",
     "sidebar.createNote": "नयाँ नोट थप्नुहोस्",
 
     // Topbar
     "topbar.searchPlaceholder": "नोट, समुदाय, स्रोतहरू खोज्नुहोस्...",
     "topbar.browse": "ब्राउज गर्नुहोस्",
+    "topbar.categories": "श्रेणीहरू",
     "topbar.community": "समुदाय",
     "topbar.resources": "स्रोतहरू",
     "topbar.upload": "अपलोड",
     "topbar.communitySoon": "समुदाय चाँडै आउँदैछ!",
     "topbar.resourcesSoon": "स्रोतहरू चाँडै आउँदैछ!",
+
+    // Categories
+    "categories.title": "श्रेणीहरू",
+    "categories.subtitle": "कक्षा र विषय अनुसार नोटहरू फेला पार्नुहोस्।",
+    "categories.class": "कक्षा",
+    "categories.subject": "विषय",
+    "categories.allClasses": "सबै कक्षा",
+    "categories.allSubjects": "सबै विषय",
+    "categories.classPrefix": "कक्षा",
+    "categories.noResults": "यो कक्षा र विषयसँग मिल्ने कुनै नोट भेटिएन।",
 
     // Notifications
     "notifications.title": "सूचनाहरू",

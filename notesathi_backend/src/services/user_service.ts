@@ -193,6 +193,12 @@ export class UserService {
     if (!user) {
       throw new HttpException(404, "User not found");
     }
+    if (!user.password) {
+      throw new HttpException(
+        400,
+        "This account uses Google Sign-In and has no password to change.",
+      );
+    }
     const isPasswordValid = await bycryptjs.compare(oldPassword, user.password);
     if (!isPasswordValid) {
       throw new HttpException(400, "Current password is incorrect");

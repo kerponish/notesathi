@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
         port: "8088",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+        pathname: "/**",
+      },
     ],
   },
 };

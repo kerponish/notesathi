@@ -18,13 +18,13 @@ export class NoteMongoRepository implements INoteRepository {
 
   async findById(id: string): Promise<INote | null> {
     return await Note.findById(id)
-      .populate("createdBy", "fullname email")
+      .populate("createdBy", "fullname email profilePicture")
       .populate("subjectId");
   }
 
   async findAll(): Promise<INote[]> {
     return await Note.find()
-      .populate("createdBy", "fullname email")
+      .populate("createdBy", "fullname email profilePicture")
       .populate("subjectId")
       .sort({ createdAt: -1 });
   }
@@ -33,7 +33,7 @@ export class NoteMongoRepository implements INoteRepository {
     return await Note.find({
       createdBy: userId,
     })
-      .populate("createdBy", "fullname email")
+      .populate("createdBy", "fullname email profilePicture")
       .populate("subjectId")
       .sort({ createdAt: -1 });
   }
@@ -45,7 +45,7 @@ export class NoteMongoRepository implements INoteRepository {
         $options: "i",
       },
     })
-      .populate("createdBy", "fullname email")
+      .populate("createdBy", "fullname email profilePicture")
       .populate("subjectId")
       .sort({ createdAt: -1 });
   }
@@ -54,7 +54,7 @@ export class NoteMongoRepository implements INoteRepository {
     return await Note.findByIdAndUpdate(id, note, {
       new: true,
     })
-      .populate("createdBy", "fullname email")
+      .populate("createdBy", "fullname email profilePicture")
       .populate("subjectId");
   }
 

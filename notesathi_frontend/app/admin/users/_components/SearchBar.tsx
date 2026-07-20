@@ -37,16 +37,15 @@ export default function SearchBar() {
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search users..."
           className="
-            w-80 rounded-xl
+            w-80 rounded-md
             border border-gray-200
             bg-white
             py-3 pl-12 pr-4
             text-[15px] font-medium text-gray-800
             placeholder:text-gray-400
-            shadow-sm
             transition-all duration-200
             focus:border-[#246BFD]
-            focus:ring-4
+            focus:ring-2
             focus:ring-blue-100
             focus:outline-none
           "

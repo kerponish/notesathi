@@ -27,7 +27,7 @@ export default function ForgotPasswordForm() {
 
   if (sent) {
     return (
-      <div className="rounded-xl border border-gray-200 bg-gray-50 p-6 text-center">
+      <div className="rounded-md border border-gray-200 bg-gray-50 p-6 text-center">
         <p className="font-semibold text-gray-900">Check your email</p>
         <p className="mt-2 text-sm text-gray-500">
           If an account exists for that email, we&apos;ve sent a link to reset
@@ -47,7 +47,7 @@ export default function ForgotPasswordForm() {
           type="email"
           placeholder="name@example.com"
           {...register("email")}
-          className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-black outline-none transition placeholder:text-gray-400 focus:border-[#5B4DFF] focus:ring-2 focus:ring-[#5B4DFF]"
+          className="w-full rounded-md border border-gray-300 bg-white px-4 py-3 text-black outline-none transition placeholder:text-gray-400 focus:border-[#5B4DFF] focus:ring-2 focus:ring-[#5B4DFF]"
         />
         {errors.email && (
           <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
@@ -57,7 +57,7 @@ export default function ForgotPasswordForm() {
       <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full rounded-xl bg-[#5B4DFF] py-3 font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
+        className="w-full rounded-md bg-[#5B4DFF] py-3 font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
       >
         {isSubmitting ? "Sending..." : "Send Reset Link"}
       </button>

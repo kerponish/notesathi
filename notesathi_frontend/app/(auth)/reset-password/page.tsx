@@ -10,7 +10,7 @@ export default async function ResetPasswordPage({
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f5f2ff] p-6">
-      <div className="w-full max-w-md rounded-2xl bg-white p-10 shadow-sm">
+      <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-10 shadow-sm">
         <h1 className="text-3xl font-bold text-[#4638dd]">Notesathi</h1>
 
         <div className="mb-8 mt-8">

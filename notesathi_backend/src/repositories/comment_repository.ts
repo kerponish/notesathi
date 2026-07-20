@@ -12,7 +12,7 @@ export class CommentMongoRepository implements ICommentRepository {
 
   async findByNote(noteId: string): Promise<IComment[]> {
     return await Comment.find({ noteId })
-      .populate("userId", "fullname email")
+      .populate("userId", "fullname email profilePicture")
       .sort({ createdAt: -1 });
   }
 }

@@ -28,7 +28,7 @@ export default async function UserDetailsPage({ params }: Props) {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-4xl font-extrabold text-slate-900">
+          <h1 className="text-3xl font-bold text-slate-900">
             User Profile
           </h1>
 
@@ -39,7 +39,7 @@ export default async function UserDetailsPage({ params }: Props) {
 
         <Link
           href="/admin/users"
-          className="flex items-center gap-2 rounded-xl border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
+          className="flex items-center gap-2 rounded-md border border-gray-300 bg-white px-5 py-3 font-semibold text-gray-700 shadow-sm transition hover:bg-gray-100"
         >
           <ArrowLeft size={18} />
           Back
@@ -48,7 +48,7 @@ export default async function UserDetailsPage({ params }: Props) {
 
       {/* Main Card */}
 
-      <div className="overflow-hidden rounded-3xl border bg-white shadow-xl">
+      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
         {/* Blue Header */}
 
         <div className="h-36 bg-gradient-to-r from-blue-600 to-indigo-700"></div>
@@ -80,7 +80,7 @@ export default async function UserDetailsPage({ params }: Props) {
         {/* Info */}
 
         <div className="grid gap-6 p-10 md:grid-cols-2">
-          <div className="rounded-2xl border bg-slate-50 p-6">
+          <div className="rounded-lg border bg-slate-50 p-6">
             <div className="mb-2 flex items-center gap-3">
               <Mail className="text-blue-600" />
               <span className="font-semibold text-gray-700">Email</span>
@@ -89,14 +89,14 @@ export default async function UserDetailsPage({ params }: Props) {
             <p className="text-lg text-gray-900">{user.email}</p>
           </div>
 
-          <div className="rounded-2xl border bg-slate-50 p-6">
+          <div className="rounded-lg border bg-slate-50 p-6">
             <div className="mb-2 flex items-center gap-3">
               <Shield className="text-indigo-600" />
               <span className="font-semibold text-gray-700">Role</span>
             </div>
 
             <span
-              className={`rounded-full px-4 py-2 text-sm font-bold ${
+              className={`rounded-md px-4 py-2 text-sm font-bold ${
                 user.role === "admin"
                   ? "bg-blue-100 text-blue-700"
                   : "bg-gray-200 text-gray-700"
@@ -106,7 +106,7 @@ export default async function UserDetailsPage({ params }: Props) {
             </span>
           </div>
 
-          <div className="rounded-2xl border bg-slate-50 p-6">
+          <div className="rounded-lg border bg-slate-50 p-6">
             <div className="mb-2 flex items-center gap-3">
               <Calendar className="text-green-600" />
               <span className="font-semibold text-gray-700">Joined Date</span>
@@ -117,10 +117,10 @@ export default async function UserDetailsPage({ params }: Props) {
             </p>
           </div>
 
-          <div className="rounded-2xl border bg-slate-50 p-6">
+          <div className="rounded-lg border bg-slate-50 p-6">
             <div className="mb-2 font-semibold text-gray-700">Status</div>
 
-            <span className="rounded-full bg-green-100 px-4 py-2 font-semibold text-green-700">
+            <span className="rounded-md bg-green-100 px-4 py-2 font-semibold text-green-700">
               Active
             </span>
           </div>
@@ -131,14 +131,14 @@ export default async function UserDetailsPage({ params }: Props) {
         <div className="flex justify-end gap-4 border-t bg-gray-50 p-6">
           <Link
             href="/admin/users"
-            className="rounded-xl border px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-100"
+            className="rounded-md border px-6 py-3 font-semibold text-gray-700 transition hover:bg-gray-100"
           >
             Back
           </Link>
 
           <Link
             href={`/admin/users/${user._id}/edit`}
-            className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
+            className="flex items-center gap-2 rounded-md bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
           >
             <Pencil size={18} />
             Edit User

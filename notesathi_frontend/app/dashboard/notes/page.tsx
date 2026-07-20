@@ -26,13 +26,13 @@ export default async function MyNotesPage() {
       </div>
 
       {notes.length === 0 ? (
-        <p className="rounded-2xl border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
+        <p className="rounded-lg border border-dashed border-slate-200 bg-white p-8 text-center text-sm text-slate-400">
           You haven&apos;t uploaded any notes yet.
         </p>
       ) : (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-6">
           {notes.map((note) => (
-            <NoteCard key={note._id} note={note} />
+            <NoteCard key={note._id} note={note} manageable />
           ))}
         </div>
       )}

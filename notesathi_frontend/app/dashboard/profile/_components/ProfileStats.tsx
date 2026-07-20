@@ -16,7 +16,7 @@ export default function ProfileStats({
   ];
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-5">
+    <div className="rounded-lg border border-slate-200 bg-white p-5">
       <div className="flex items-center gap-2">
         <Share2 className="h-4 w-4 text-violet-600" />
         <h2 className="text-base font-bold text-slate-900">
@@ -28,7 +28,7 @@ export default function ProfileStats({
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="flex items-center gap-3 rounded-xl border-l-2 border-violet-600 bg-slate-50 px-4 py-3"
+            className="flex items-center gap-3 rounded-lg border-l-2 border-violet-600 bg-slate-50 px-4 py-3"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
               <stat.icon className="h-4 w-4" />

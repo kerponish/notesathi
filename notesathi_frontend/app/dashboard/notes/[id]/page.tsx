@@ -7,6 +7,7 @@ import { getNoteById } from "@/lib/api/notes";
 import { getComments } from "@/lib/api/comments";
 import { resolveMediaUrl } from "@/lib/utils/media";
 import { timeAgo } from "@/lib/utils/time";
+import Avatar from "@/app/_components/avatar";
 import LikeButton from "./_components/LikeButton";
 import CommentSection from "./_components/CommentSection";
 
@@ -52,7 +53,7 @@ export default async function NoteDetailPage({
         Back to notes
       </Link>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-100 bg-white">
+      <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
         <div className="relative flex h-56 items-center justify-center bg-violet-50 sm:h-72">
           {thumbnailUrl ? (
             <Image
@@ -70,11 +71,11 @@ export default async function NoteDetailPage({
         <div className="p-6">
           <div className="flex flex-wrap items-center gap-2">
             {note.subjectId?.name && (
-              <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-violet-600">
+              <span className="rounded-md bg-violet-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-violet-600">
                 {note.subjectId.name}
               </span>
             )}
-            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
+            <span className="rounded-md bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-500">
               Class {note.classLevel}
             </span>
           </div>
@@ -84,11 +85,15 @@ export default async function NoteDetailPage({
             {note.description}
           </p>
 
-          <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-5">
+          <div className="mt-5 flex items-center justify-between border-t border-slate-200 pt-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-900 text-sm font-medium text-white">
-                {(note.createdBy?.fullname?.[0] || "U").toUpperCase()}
-              </div>
+              <Avatar
+                name={note.createdBy?.fullname}
+                src={note.createdBy?.profilePicture}
+                size={36}
+                className="text-sm font-medium"
+                fallbackClassName="bg-slate-900 text-white text-sm font-medium"
+              />
               <div>
                 <p className="text-sm font-semibold text-slate-900">
                   {note.createdBy?.fullname || "Unknown"}
@@ -118,7 +123,7 @@ export default async function NoteDetailPage({
         </div>
       </div>
 
-      <div className="flex items-center justify-between rounded-2xl bg-violet-600 p-6 text-white">
+      <div className="flex items-center justify-between rounded-lg bg-violet-600 p-6 text-white">
         <div>
           <h2 className="text-base font-bold">Test what you've learned</h2>
           <p className="mt-1 text-sm text-violet-100">
@@ -141,6 +146,7 @@ export default async function NoteDetailPage({
           _id: user?._id,
           fullname: user?.fullname,
           email: user?.email,
+          profilePicture: user?.profilePicture,
         }}
       />
     </div>

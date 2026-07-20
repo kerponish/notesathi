@@ -31,7 +31,7 @@ export default function Home() {
         <section className="mx-auto max-w-6xl px-6 pb-20 pt-16 sm:pt-24">
           <div className="grid items-center gap-12 lg:grid-cols-2">
             <div>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-3 py-1 text-xs font-medium text-violet-700">
+              <span className="inline-flex items-center gap-1.5 border-b-2 border-violet-600 pb-1 text-xs font-semibold uppercase tracking-wider text-violet-700">
                 <Sparkles className="h-3.5 w-3.5" />
                 {t("landing.badge")}
               </span>
@@ -45,13 +45,13 @@ export default function Home() {
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Link
                   href="/login"
-                  className="flex h-11 items-center rounded-full bg-violet-600 px-6 text-sm font-medium text-white transition-colors hover:bg-violet-700"
+                  className="flex h-11 items-center rounded-md bg-violet-600 px-6 text-sm font-medium text-white transition-colors hover:bg-violet-700"
                 >
                   {t("landing.getStarted")}
                 </Link>
                 <Link
                   href="/login"
-                  className="flex h-11 items-center rounded-full border border-slate-200 px-6 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50"
+                  className="flex h-11 items-center rounded-md border border-slate-300 px-6 text-sm font-medium text-slate-700 transition-colors hover:border-slate-400 hover:bg-slate-50"
                 >
                   {t("landing.browseNotes")}
                 </Link>
@@ -59,14 +59,13 @@ export default function Home() {
             </div>
 
             <div className="relative">
-              <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden rounded-3xl bg-linear-to-br from-violet-500 to-indigo-600">
-                <div className="flex h-40 w-40 items-center justify-center rounded-3xl bg-white/95 p-6 shadow-xl">
+              <div className="relative flex aspect-4/3 items-center justify-center overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                <div className="flex h-40 w-40 items-center justify-center rounded-lg border border-slate-200 bg-white p-6">
                   <Image src={logo} alt="Notesathi" className="h-full w-full object-contain" />
                 </div>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.25),transparent_55%)]" />
               </div>
-              <div className="absolute -bottom-6 -left-6 flex items-center gap-3 rounded-2xl border border-slate-100 bg-white px-5 py-4 shadow-lg">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-50 text-violet-600">
+              <div className="absolute -bottom-6 -left-6 flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-5 py-4 shadow-sm">
+                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-violet-50 text-violet-600">
                   <Users className="h-5 w-5" />
                 </div>
                 <div>
@@ -93,8 +92,8 @@ export default function Home() {
             </div>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-2">
-              <div className="rounded-2xl border border-slate-100 bg-white p-8">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-50 text-violet-600">
+              <div className="rounded-lg border border-slate-200 bg-white p-8">
+                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-violet-50 text-violet-600">
                   <Users className="h-5 w-5" />
                 </div>
                 <h3 className="mt-5 text-lg font-semibold text-slate-900">
@@ -105,8 +104,8 @@ export default function Home() {
                 </p>
               </div>
 
-              <div className="rounded-2xl bg-violet-600 p-8 text-white">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/15">
+              <div className="rounded-lg bg-violet-600 p-8 text-white">
+                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-white/15">
                   <Search className="h-5 w-5" />
                 </div>
                 <h3 className="mt-5 text-lg font-semibold">{t("landing.searchTitle")}</h3>
@@ -129,7 +128,7 @@ export default function Home() {
               {testimonials.map((item) => (
                 <div
                   key={item.name}
-                  className="rounded-2xl border border-slate-100 bg-white p-6"
+                  className="rounded-lg border border-slate-200 bg-white p-6"
                 >
                   <div className="flex gap-0.5 text-amber-400">
                     {Array.from({ length: 5 }).map((_, i) => (
@@ -156,7 +155,7 @@ export default function Home() {
 
         {/* CTA */}
         <section className="px-6 pb-20">
-          <div className="mx-auto max-w-6xl rounded-3xl bg-violet-600 px-8 py-16 text-center">
+          <div className="mx-auto max-w-6xl rounded-lg bg-violet-600 px-8 py-16 text-center">
             <h2 className="text-2xl font-bold text-white sm:text-3xl">
               {t("landing.ctaTitle")}
             </h2>
@@ -165,7 +164,7 @@ export default function Home() {
             </p>
             <Link
               href="/signup"
-              className="mt-8 inline-flex h-11 items-center rounded-full bg-white px-6 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-50"
+              className="mt-8 inline-flex h-11 items-center rounded-md bg-white px-6 text-sm font-medium text-violet-700 transition-colors hover:bg-violet-50"
             >
               {t("landing.ctaButton")}
             </Link>

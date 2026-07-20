@@ -39,10 +39,10 @@ export default function ProfileHeader({
             alt={fullname}
             width={72}
             height={72}
-            className="h-18 w-18 rounded-2xl object-cover"
+            className="h-18 w-18 rounded-lg object-cover"
           />
         ) : (
-          <div className="flex h-18 w-18 items-center justify-center rounded-2xl bg-slate-900 text-2xl font-semibold text-white">
+          <div className="flex h-18 w-18 items-center justify-center rounded-lg bg-slate-900 text-2xl font-semibold text-white">
             {initial}
           </div>
         )}

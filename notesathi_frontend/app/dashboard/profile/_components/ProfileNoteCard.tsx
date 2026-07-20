@@ -7,7 +7,7 @@ export default function ProfileNoteCard({ note }: { note: Note }) {
   return (
     <Link
       href={`/dashboard/notes/${note._id}`}
-      className="flex flex-col rounded-2xl border border-slate-100 bg-white p-4 transition-shadow hover:shadow-sm"
+      className="flex flex-col rounded-lg border border-slate-200 bg-white p-4 transition-shadow hover:shadow-sm"
     >
       <div className="flex items-start justify-between">
         <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-violet-100 text-violet-600">
@@ -27,7 +27,7 @@ export default function ProfileNoteCard({ note }: { note: Note }) {
         {note.description}
       </p>
 
-      <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-400">
+      <div className="mt-4 flex items-center justify-between border-t border-slate-200 pt-3 text-xs text-slate-400">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1">
             <Heart className="h-3.5 w-3.5" />

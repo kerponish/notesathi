@@ -5,7 +5,7 @@ import GoogleAuthButton from "../_components/GoogleAuthButton";
 export default function SignupPage() {
   return (
     <div className="min-h-screen bg-[#f5f2ff] flex items-center justify-center p-6">
-      <div className="w-full max-w-6xl bg-[#faf8ff] rounded-[32px] overflow-hidden shadow-sm grid md:grid-cols-2">
+      <div className="w-full max-w-6xl bg-[#faf8ff] rounded-lg overflow-hidden border border-[#e5e0fa] shadow-sm grid md:grid-cols-2">
         {/* Left Side */}
         <div className="bg-[#f7f4ff] p-10 flex flex-col justify-between">
           <div>
@@ -14,7 +14,7 @@ export default function SignupPage() {
             </h1>
 
             <div className="space-y-4">
-              <h2 className="text-5xl font-bold leading-tight text-[#1B1B1F]">
+              <h2 className="text-4xl font-bold leading-tight text-[#1B1B1F]">
                 Elevate your <br />
                 learning journey
               </h2>
@@ -31,7 +31,7 @@ export default function SignupPage() {
             <img
               src="/images/book.png"
               alt="Book"
-              className="w-full max-w-md rounded-2xl"
+              className="w-full max-w-md rounded-lg"
             />
           </div>
         </div>

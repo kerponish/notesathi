@@ -49,3 +49,24 @@ export const toggleLike = async (id: string) => {
     throw new Error(error?.response?.data?.message || "Failed to update like");
   }
 };
+
+export const updateNote = async (
+  id: string,
+  data: { title?: string; description?: string; subjectId?: string; classLevel?: string },
+) => {
+  try {
+    const response = await axiosInstance.put(API.NOTE.UPDATE(id), data);
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || "Failed to update note");
+  }
+};
+
+export const deleteNote = async (id: string) => {
+  try {
+    const response = await axiosInstance.delete(API.NOTE.DELETE(id));
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message || "Failed to delete note");
+  }
+};

@@ -43,7 +43,7 @@ export default function QuizRunner({
 
     return (
       <div className="flex flex-col gap-6">
-        <div className="rounded-2xl border border-slate-100 bg-white p-8 text-center">
+        <div className="rounded-lg border border-slate-100 bg-white p-8 text-center">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
             Quiz Results
           </p>
@@ -66,7 +66,7 @@ export default function QuizRunner({
             return (
               <div
                 key={i}
-                className="rounded-2xl border border-slate-100 bg-white p-5"
+                className="rounded-lg border border-slate-100 bg-white p-5"
               >
                 <div className="flex items-start gap-3">
                   <div
@@ -111,7 +111,7 @@ export default function QuizRunner({
   }
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-6">
+    <div className="rounded-lg border border-slate-100 bg-white p-6">
       <div className="flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
           {noteTitle}
