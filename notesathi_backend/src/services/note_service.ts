@@ -27,6 +27,26 @@ export class NoteService {
     return await noteRepository.findAll();
   }
 
+  async getAllNotesPaginated(page?: string, limit?: string, search?: string) {
+    const currentPage = page && parseInt(page) > 0 ? parseInt(page) : 1;
+    const currentLimit = limit && parseInt(limit) > 0 ? parseInt(limit) : 10;
+    const currentSearch = search && search.trim() !== "" ? search : undefined;
+
+    const { data, total } = await noteRepository.findAllPaginated(
+      currentPage,
+      currentLimit,
+      currentSearch,
+    );
+    const totalPages = Math.ceil(total / currentLimit);
+    const pagination = {
+      page: currentPage,
+      limit: currentLimit,
+      totalPages,
+      total,
+    };
+    return { data, pagination };
+  }
+
   async searchNotes(keyword: string) {
     return await noteRepository.search(keyword);
   }
@@ -53,6 +73,31 @@ export class NoteService {
     }
 
     return await noteRepository.update(noteId, noteData as any);
+  }
+
+  // Admin variants: no ownership check, admin can manage any note.
+  async adminUpdateNote(noteId: string, noteData: UpdateNoteDto) {
+    const note = await noteRepository.findById(noteId);
+
+    if (!note) {
+      throw new HttpException(404, "Note not found");
+    }
+
+    return await noteRepository.update(noteId, noteData as any);
+  }
+
+  async adminDeleteNote(noteId: string) {
+    const note = await noteRepository.findById(noteId);
+
+    if (!note) {
+      throw new HttpException(404, "Note not found");
+    }
+
+    await noteRepository.delete(noteId);
+
+    return {
+      message: "Note deleted successfully",
+    };
   }
 
   async toggleLike(noteId: string, userId: string) {

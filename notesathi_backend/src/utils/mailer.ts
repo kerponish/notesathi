@@ -19,7 +19,7 @@ function getTransporter() {
   return transporter;
 }
 
-export async function sendPasswordResetEmail(to: string, resetUrl: string) {
+export async function sendPasswordResetEmail(to: string, code: string) {
   const mailer = getTransporter();
   if (!mailer) {
     throw new Error("Email is not configured");
@@ -28,15 +28,13 @@ export async function sendPasswordResetEmail(to: string, resetUrl: string) {
   await mailer.sendMail({
     from: `"Notesathi" <${EMAIL_USER}>`,
     to,
-    subject: "Reset your Notesathi password",
+    subject: "Your Notesathi password reset code",
     html: `
       <div style="font-family: sans-serif; max-width: 480px; margin: 0 auto;">
         <h2 style="color: #7c3aed;">Reset your password</h2>
-        <p>We received a request to reset your Notesathi password. Click the button below to choose a new one. This link expires in 1 hour.</p>
-        <p style="margin: 24px 0;">
-          <a href="${resetUrl}" style="background: #7c3aed; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-            Reset Password
-          </a>
+        <p>We received a request to reset your Notesathi password. Enter this code in the app to choose a new one. It expires in 10 minutes.</p>
+        <p style="margin: 24px 0; font-size: 32px; font-weight: 700; letter-spacing: 8px; color: #1B1B1F;">
+          ${code}
         </p>
         <p style="color: #666; font-size: 13px;">
           If you didn't request this, you can safely ignore this email.

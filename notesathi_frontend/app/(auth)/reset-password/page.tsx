@@ -4,9 +4,9 @@ import ResetPasswordForm from "../_components/ResetPasswordForm";
 export default async function ResetPasswordPage({
   searchParams,
 }: {
-  searchParams: Promise<{ token?: string }>;
+  searchParams: Promise<{ email?: string }>;
 }) {
-  const { token } = await searchParams;
+  const { email } = await searchParams;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#f5f2ff] p-6">
@@ -15,10 +15,12 @@ export default async function ResetPasswordPage({
 
         <div className="mb-8 mt-8">
           <h2 className="text-2xl font-bold text-[#1B1B1F]">Reset password</h2>
-          <p className="mt-2 text-gray-500">Choose a new password below.</p>
+          <p className="mt-2 text-gray-500">
+            Enter the 6-digit code we emailed you and choose a new password.
+          </p>
         </div>
 
-        <ResetPasswordForm token={token ?? ""} />
+        <ResetPasswordForm email={email ?? ""} />
 
         <p className="mt-8 text-center text-sm text-gray-500">
           Remembered it?{" "}

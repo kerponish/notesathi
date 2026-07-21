@@ -8,8 +8,8 @@ export interface IUser extends UserType, Document {
   updatedAt: Date;
   // internal-only fields: never part of UserSchema/UpdateUserDTO, so they
   // can never be set through the generic profile-update endpoint.
-  resetPasswordToken?: string;
-  resetPasswordExpires?: Date;
+  resetPasswordCode?: string;
+  resetPasswordCodeExpires?: Date;
 }
 const UserMongoSchema: Schema = new Schema<IUser>(
   {
@@ -30,8 +30,8 @@ const UserMongoSchema: Schema = new Schema<IUser>(
     notificationsEnabled: { type: Boolean, default: true },
     language: { type: String, enum: ["en", "ne"], default: "en" },
 
-    resetPasswordToken: { type: String, select: false },
-    resetPasswordExpires: { type: Date, select: false },
+    resetPasswordCode: { type: String, select: false },
+    resetPasswordCodeExpires: { type: Date, select: false },
   },
   {
     timestamps: true, // createdAt and updatedAt will be automatically added and managed by mongoose

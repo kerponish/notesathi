@@ -65,7 +65,8 @@ export type GoogleAuthDTO = z.infer<typeof GoogleAuthDTO>;
 
 export const ResetPasswordDTO = z
   .object({
-    token: z.string().min(1, "Reset token is required"),
+    email: z.email("Enter a valid email address"),
+    code: z.string().regex(/^\d{6}$/, "Code must be 6 digits"),
     newPassword: z.string().min(6, "New password must be at least 6 characters long"),
     confirmPassword: z
       .string()

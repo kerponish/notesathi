@@ -2,9 +2,9 @@ import { UserModel, IUser } from "../models/user_model";
 
 export interface IUserRepository {
   getUserByEmail(email: string): Promise<IUser | null>;
-  getUserByResetToken(hashedToken: string): Promise<IUser | null>;
-  setResetToken(id: string, hashedToken: string, expires: Date): Promise<void>;
-  clearResetToken(id: string): Promise<void>;
+  getUserByResetCode(email: string, hashedCode: string): Promise<IUser | null>;
+  setResetCode(id: string, hashedCode: string, expires: Date): Promise<void>;
+  clearResetCode(id: string): Promise<void>;
 
   // 5 common mandatory methods for a repository
   createUser(user: Partial<IUser>): Promise<IUser>;
@@ -28,28 +28,32 @@ export class UserMongoRepository implements IUserRepository {
     return found;
   }
 
-  async getUserByResetToken(hashedToken: string): Promise<IUser | null> {
+  async getUserByResetCode(
+    email: string,
+    hashedCode: string,
+  ): Promise<IUser | null> {
     const found = await UserModel.findOne({
-      resetPasswordToken: hashedToken,
-      resetPasswordExpires: { $gt: new Date() },
-    }).select("+resetPasswordToken +resetPasswordExpires");
+      email,
+      resetPasswordCode: hashedCode,
+      resetPasswordCodeExpires: { $gt: new Date() },
+    }).select("+resetPasswordCode +resetPasswordCodeExpires");
     return found;
   }
 
-  async setResetToken(
+  async setResetCode(
     id: string,
-    hashedToken: string,
+    hashedCode: string,
     expires: Date,
   ): Promise<void> {
     await UserModel.findByIdAndUpdate(id, {
-      resetPasswordToken: hashedToken,
-      resetPasswordExpires: expires,
+      resetPasswordCode: hashedCode,
+      resetPasswordCodeExpires: expires,
     });
   }
 
-  async clearResetToken(id: string): Promise<void> {
+  async clearResetCode(id: string): Promise<void> {
     await UserModel.findByIdAndUpdate(id, {
-      $unset: { resetPasswordToken: "", resetPasswordExpires: "" },
+      $unset: { resetPasswordCode: "", resetPasswordCodeExpires: "" },
     });
   }
 
@@ -78,7 +82,7 @@ export class UserMongoRepository implements IUserRepository {
     const query: any = {};
     if (search) {
       query.$or = [
-        { username: { $regex: search, $options: "i" } },
+        { fullname: { $regex: search, $options: "i" } },
         { email: { $regex: search, $options: "i" } },
       ];
     }

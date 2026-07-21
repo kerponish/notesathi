@@ -4,6 +4,11 @@ export interface INoteRepository {
   create(note: INote): Promise<INote>;
   findById(id: string): Promise<INote | null>;
   findAll(): Promise<INote[]>;
+  findAllPaginated(
+    page: number,
+    limit: number,
+    search?: string,
+  ): Promise<{ data: INote[]; total: number }>;
   findByUser(userId: string): Promise<INote[]>;
   search(keyword: string): Promise<INote[]>;
   update(id: string, note: Partial<INote>): Promise<INote | null>;
@@ -27,6 +32,28 @@ export class NoteMongoRepository implements INoteRepository {
       .populate("createdBy", "fullname email profilePicture")
       .populate("subjectId")
       .sort({ createdAt: -1 });
+  }
+
+  async findAllPaginated(
+    page: number,
+    limit: number,
+    search?: string,
+  ): Promise<{ data: INote[]; total: number }> {
+    const query: any = {};
+    if (search) {
+      query.$or = [
+        { title: { $regex: search, $options: "i" } },
+        { category: { $regex: search, $options: "i" } },
+      ];
+    }
+    const total = await Note.countDocuments(query);
+    const data = await Note.find(query)
+      .populate("createdBy", "fullname email profilePicture")
+      .populate("subjectId")
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+    return { data, total };
   }
 
   async findByUser(userId: string): Promise<INote[]> {

@@ -12,7 +12,7 @@ export default function AdminLayout({
 
       <section className="mx-auto mt-6 w-[95%]">{children}</section>
 
-      <Footer compact />
+      <Footer />
     </main>
   );
 }

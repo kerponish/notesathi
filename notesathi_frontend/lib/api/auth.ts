@@ -92,7 +92,8 @@ export const forgotPassword = async (email: string) => {
 };
 
 export const resetPassword = async (data: {
-  token: string;
+  email: string;
+  code: string;
   newPassword: string;
   confirmPassword: string;
 }) => {

@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { ForgotPasswordFormData, forgotPasswordSchema } from "./schema";
 import { handleForgotPassword } from "@/lib/actions/auth-action";
 
 export default function ForgotPasswordForm() {
-  const [sent, setSent] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -20,22 +20,10 @@ export default function ForgotPasswordForm() {
 
   const onSubmit = async (data: ForgotPasswordFormData) => {
     await handleForgotPassword(data.email);
-    // Always show the same confirmation, regardless of whether the email
-    // is registered — avoids leaking which emails have accounts.
-    setSent(true);
+    // Always proceed the same way regardless of whether the email is
+    // registered — avoids leaking which emails have accounts.
+    router.push(`/reset-password?email=${encodeURIComponent(data.email)}`);
   };
-
-  if (sent) {
-    return (
-      <div className="rounded-md border border-gray-200 bg-gray-50 p-6 text-center">
-        <p className="font-semibold text-gray-900">Check your email</p>
-        <p className="mt-2 text-sm text-gray-500">
-          If an account exists for that email, we&apos;ve sent a link to reset
-          your password. It expires in 1 hour.
-        </p>
-      </div>
-    );
-  }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
@@ -59,7 +47,7 @@ export default function ForgotPasswordForm() {
         disabled={isSubmitting}
         className="w-full rounded-md bg-[#5B4DFF] py-3 font-semibold text-white transition hover:opacity-90 disabled:opacity-50"
       >
-        {isSubmitting ? "Sending..." : "Send Reset Link"}
+        {isSubmitting ? "Sending..." : "Send Reset Code"}
       </button>
     </form>
   );

@@ -184,7 +184,7 @@ export const handleForgotPassword = async (email: string) => {
     const result = await forgotPassword(email);
     return {
       success: !!result.success,
-      message: result.message || "If that email is registered, a reset link has been sent.",
+      message: result.message || "If that email is registered, a reset code has been sent.",
     };
   } catch (error: any) {
     return {
@@ -195,7 +195,8 @@ export const handleForgotPassword = async (email: string) => {
 };
 
 export const handleResetPassword = async (data: {
-  token: string;
+  email: string;
+  code: string;
   newPassword: string;
   confirmPassword: string;
 }) => {

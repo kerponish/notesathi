@@ -8,7 +8,7 @@ import Link from "next/link";
 import { ResetPasswordFormData, resetPasswordSchema } from "./schema";
 import { handleResetPassword } from "@/lib/actions/auth-action";
 
-export default function ResetPasswordForm({ token }: { token: string }) {
+export default function ResetPasswordForm({ email }: { email: string }) {
   const router = useRouter();
   const [error, setError] = useState("");
 
@@ -18,17 +18,17 @@ export default function ResetPasswordForm({ token }: { token: string }) {
     formState: { errors, isSubmitting },
   } = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
-    defaultValues: { newPassword: "", confirmPassword: "" },
+    defaultValues: { code: "", newPassword: "", confirmPassword: "" },
   });
 
-  if (!token) {
+  if (!email) {
     return (
       <div className="rounded-md border border-red-200 bg-red-50 p-6 text-center">
-        <p className="font-semibold text-red-600">Invalid reset link</p>
+        <p className="font-semibold text-red-600">No email to reset</p>
         <p className="mt-2 text-sm text-gray-500">
-          This link is missing its reset token.{" "}
+          Start over to receive a reset code.{" "}
           <Link href="/forgot-password" className="font-semibold text-[#5B4DFF] hover:underline">
-            Request a new one
+            Request a code
           </Link>
           .
         </p>
@@ -38,7 +38,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     setError("");
-    const result = await handleResetPassword({ token, ...data });
+    const result = await handleResetPassword({ email, ...data });
     if (!result.success) {
       setError(result.message);
       return;
@@ -53,6 +53,23 @@ export default function ResetPasswordForm({ token }: { token: string }) {
           {error}
         </div>
       )}
+
+      <div>
+        <label className="mb-2 block text-sm font-semibold text-gray-700">
+          6-DIGIT CODE
+        </label>
+        <input
+          type="text"
+          inputMode="numeric"
+          maxLength={6}
+          placeholder="123456"
+          {...register("code")}
+          className="w-full rounded-md border border-gray-300 bg-white px-4 py-3 tracking-[0.5em] text-black outline-none transition placeholder:text-gray-400 placeholder:tracking-normal focus:border-[#5B4DFF] focus:ring-2 focus:ring-[#5B4DFF]"
+        />
+        {errors.code && (
+          <p className="mt-1 text-sm text-red-500">{errors.code.message}</p>
+        )}
+      </div>
 
       <div>
         <label className="mb-2 block text-sm font-semibold text-gray-700">

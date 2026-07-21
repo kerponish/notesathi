@@ -17,7 +17,7 @@ export default function GoogleAuthButton() {
     const result = await handleGoogleAuth(credentialResponse.credential);
 
     if (result.success) {
-      router.push("/dashboard");
+      router.push(result.data?.user?.role === "admin" ? "/admin" : "/dashboard");
     } else {
       toast.error(result.message || "Google sign-in failed");
     }

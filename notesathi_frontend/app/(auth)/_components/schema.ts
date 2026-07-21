@@ -27,6 +27,7 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z
   .object({
+    code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
     newPassword: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z
       .string()

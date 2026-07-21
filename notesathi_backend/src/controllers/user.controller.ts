@@ -201,7 +201,7 @@ export class UserController {
       return ApiResponseHelper.success(
         res,
         null,
-        "If that email is registered, a reset link has been sent.",
+        "If that email is registered, a reset code has been sent.",
         200,
       );
     } catch (e: Error | unknown | any) {
@@ -221,7 +221,8 @@ export class UserController {
       }
 
       await userService.resetPassword(
-        parseResult.data.token,
+        parseResult.data.email,
+        parseResult.data.code,
         parseResult.data.newPassword,
       );
 

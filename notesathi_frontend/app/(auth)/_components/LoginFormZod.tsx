@@ -35,7 +35,7 @@ export default function LoginFormZod() {
       if (result.success) {
         console.log("Login successful");
 
-        router.push("/dashboard");
+        router.push(result.data?.user?.role === "admin" ? "/admin" : "/dashboard");
       } else {
         console.log("Login failed:", result.message);
       }

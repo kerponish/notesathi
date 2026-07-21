@@ -11,7 +11,7 @@ import bycryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { OAuth2Client } from "google-auth-library";
-import { SECRET_KEY, FRONTEND_URL, GOOGLE_CLIENT_ID } from "../config/constant";
+import { SECRET_KEY, GOOGLE_CLIENT_ID } from "../config/constant";
 import { sendPasswordResetEmail } from "../utils/mailer";
 
 const userRepository = new UserMongoRepository();
@@ -221,28 +221,33 @@ export class UserService {
       return;
     }
 
-    const rawToken = crypto.randomBytes(32).toString("hex");
-    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
-    const expires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    // 6-digit numeric OTP, sent directly in the email body — no link, so it
+    // works the same way for web and any future mobile client.
+    const code = crypto.randomInt(100000, 1000000).toString();
+    const hashedCode = crypto.createHash("sha256").update(code).digest("hex");
+    const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
-    await userRepository.setResetToken(user._id.toString(), hashedToken, expires);
+    await userRepository.setResetCode(user._id.toString(), hashedCode, expires);
 
-    const resetUrl = `${FRONTEND_URL}/reset-password?token=${rawToken}`;
-    await sendPasswordResetEmail(user.email, resetUrl);
+    await sendPasswordResetEmail(user.email, code);
   }
 
-  async resetPassword(rawToken: string, newPassword: string): Promise<void> {
-    const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
-    const user = await userRepository.getUserByResetToken(hashedToken);
+  async resetPassword(
+    email: string,
+    code: string,
+    newPassword: string,
+  ): Promise<void> {
+    const hashedCode = crypto.createHash("sha256").update(code).digest("hex");
+    const user = await userRepository.getUserByResetCode(email, hashedCode);
 
     if (!user) {
-      throw new HttpException(400, "Reset link is invalid or has expired");
+      throw new HttpException(400, "Reset code is invalid or has expired");
     }
 
     const hashedPassword = await bycryptjs.hash(newPassword, 10);
     await userRepository.update(user._id.toString(), {
       password: hashedPassword,
     });
-    await userRepository.clearResetToken(user._id.toString());
+    await userRepository.clearResetCode(user._id.toString());
   }
 }

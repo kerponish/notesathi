@@ -5,6 +5,7 @@ import cors from "cors";
 import userRoutes from "./routes/user_route";
 import path from "path";
 import adminUserRoutes from "./routes/admin/user_routes";
+import adminNoteRoutes from "./routes/admin/note_routes";
 import noteRoutes from "./routes/note_route";
 import subjectRoutes from "./routes/subject_route";
 import notificationRoutes from "./routes/notification_route";
@@ -22,6 +23,8 @@ app.use(express.urlencoded({ extended: true })); //use form-urlencoded as reques
 app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use("/api/admin/users", adminUserRoutes);
+
+app.use("/api/admin/notes", adminNoteRoutes);
 
 app.use("/api/users", userRoutes);
 

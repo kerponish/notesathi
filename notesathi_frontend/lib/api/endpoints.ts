@@ -37,5 +37,12 @@ export const API = {
       UPDATE_PASSWORD: (id: string) => `/api/admin/users/${id}/password`,
       DELETE: (id: string) => `/api/admin/users/${id}`,
     },
+    NOTES: {
+      GET_ALL: "/api/admin/notes",
+      GET_BY_ID: (id: string) => `/api/admin/notes/${id}`,
+      CREATE: "/api/admin/notes",
+      UPDATE: (id: string) => `/api/admin/notes/${id}`,
+      DELETE: (id: string) => `/api/admin/notes/${id}`,
+    },
   },
 };
