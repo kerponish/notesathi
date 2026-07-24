@@ -12,6 +12,9 @@
 
 # testing
 /coverage
+/test-results
+/playwright-report
+/playwright/.cache
 
 # ignore .next folder inside notesathi_frontend and node_modules in notesathi_backned
 
